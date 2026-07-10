@@ -6,6 +6,7 @@ import * as THREE from "three";
 import type { Piece } from "@/lib/types";
 import { ROOM_H, type Hang } from "@/lib/gallery";
 import AimedSpot from "./AimedSpot";
+import { useGifTexture } from "./useGifTexture";
 
 const FRAME_T = 0.075; // frame bar thickness
 const FRAME_D = 0.07; // frame depth off the wall
@@ -63,23 +64,44 @@ function PlacardMesh({ piece }: { piece: Piece }) {
   );
 }
 
-export default function Artwork({
-  hang,
-  castShadow = true,
-}: {
+interface ArtworkProps {
   hang: Hang;
   /** WebGL allows ~16 texture units per shader; every shadow map costs one,
       so in the long single-wing hall only a subset of spots may cast. */
   castShadow?: boolean;
-}) {
-  const { piece, position, rotationY } = hang;
-  const texture = useTexture(piece.image);
-  const [hovered, setHovered] = useState(false);
+}
 
+export default function Artwork(props: ArtworkProps) {
+  const isGif = props.hang.piece.image.toLowerCase().endsWith(".gif");
+  return isGif ? <GifArtwork {...props} /> : <StaticArtwork {...props} />;
+}
+
+function StaticArtwork({ hang, castShadow = true }: ArtworkProps) {
+  const texture = useTexture(hang.piece.image);
   useEffect(() => {
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.anisotropy = 8;
   }, [texture]);
+  return <ArtworkBody hang={hang} castShadow={castShadow} texture={texture} />;
+}
+
+function GifArtwork({ hang, castShadow = true }: ArtworkProps) {
+  const texture = useGifTexture(hang.piece.image);
+  if (!texture) return null;
+  return <ArtworkBody hang={hang} castShadow={castShadow} texture={texture} />;
+}
+
+function ArtworkBody({
+  hang,
+  castShadow,
+  texture,
+}: {
+  hang: Hang;
+  castShadow: boolean;
+  texture: THREE.Texture;
+}) {
+  const { piece, position, rotationY } = hang;
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     document.body.style.cursor = hovered ? "pointer" : "auto";
