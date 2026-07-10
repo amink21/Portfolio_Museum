@@ -72,7 +72,7 @@ export default function GalleryScene({
       <Suspense fallback={null}>
         <Room category={category} roomLength={layout.roomLength} />
         {layout.hangs.map((hang) => (
-          <Artwork key={hang.piece.slug} hang={hang} onInspect={onInspect} />
+          <Artwork key={hang.piece.slug} hang={hang} />
         ))}
         <Environment resolution={64} frames={1}>
           <Lightformer
@@ -103,6 +103,7 @@ export default function GalleryScene({
         roomLength={layout.roomLength}
         start={layout.start}
         onLockChange={onLockChange}
+        onInspect={onInspect}
         frozen={frozen}
       />
       <CenterRaycast onInspect={onInspect} />

@@ -63,13 +63,7 @@ function PlacardMesh({ piece }: { piece: Piece }) {
   );
 }
 
-export default function Artwork({
-  hang,
-  onInspect,
-}: {
-  hang: Hang;
-  onInspect: (piece: Piece) => void;
-}) {
+export default function Artwork({ hang }: { hang: Hang }) {
   const { piece, position, rotationY } = hang;
   const texture = useTexture(piece.image);
   const [hovered, setHovered] = useState(false);
@@ -144,10 +138,6 @@ export default function Artwork({
       <mesh
         position={[0, 0, 0.028]}
         userData={{ piece }}
-        onClick={(e) => {
-          e.stopPropagation();
-          if (!document.pointerLockElement) onInspect(piece);
-        }}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >

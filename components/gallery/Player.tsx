@@ -3,27 +3,63 @@
 import { useEffect, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { PointerLockControls } from "@react-three/drei";
+import type { PointerLockControls as PointerLockControlsImpl } from "three-stdlib";
 import * as THREE from "three";
 import gsap from "gsap";
+import type { Piece } from "@/lib/types";
 import { EYE_HEIGHT, ROOM_W } from "@/lib/gallery";
 
 interface Props {
   roomLength: number;
   start: [number, number, number];
   onLockChange: (locked: boolean) => void;
+  onInspect: (piece: Piece) => void;
   frozen: boolean;
 }
 
 const WALK_SPEED = 3.2;
 const WALL_PAD = 0.75;
 
-export default function Player({ roomLength, start, onLockChange, frozen }: Props) {
-  const { camera } = useThree();
+export default function Player({
+  roomLength,
+  start,
+  onLockChange,
+  onInspect,
+  frozen,
+}: Props) {
+  const { camera, gl, scene } = useThree();
   const keys = useRef<Record<string, boolean>>({});
   const vel = useRef(new THREE.Vector3());
   const bobT = useRef(0);
+  const controls = useRef<PointerLockControlsImpl>(null);
   const frozenRef = useRef(frozen);
   frozenRef.current = frozen;
+
+  // Unlocked click: inspect a work if one is under the cursor, otherwise
+  // enter first-person. (Locked clicks are handled by CenterRaycast.)
+  useEffect(() => {
+    const el = gl.domElement;
+    const raycaster = new THREE.Raycaster();
+    const onClick = (e: MouseEvent) => {
+      if (frozenRef.current || document.pointerLockElement) return;
+      const rect = el.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
+      const hits = raycaster.intersectObjects(scene.children, true);
+      for (const hit of hits) {
+        const piece = hit.object.userData.piece as Piece | undefined;
+        if (piece) {
+          onInspect(piece);
+          return;
+        }
+        if (hit.object.userData.solid) break;
+      }
+      controls.current?.lock();
+    };
+    el.addEventListener("click", onClick);
+    return () => el.removeEventListener("click", onClick);
+  }, [camera, gl, scene, onInspect]);
 
   // Entry dolly: drift forward from the doorway while the title card lifts
   useEffect(() => {
@@ -101,6 +137,8 @@ export default function Player({ roomLength, start, onLockChange, frozen }: Prop
 
   return (
     <PointerLockControls
+      ref={controls}
+      selector="#plc-manual-lock-only"
       onLock={() => onLockChange(true)}
       onUnlock={() => onLockChange(false)}
     />
