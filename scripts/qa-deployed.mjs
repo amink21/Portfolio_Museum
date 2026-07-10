@@ -103,7 +103,7 @@ ok("unknown wing 404s", resp.status() === 404, `status ${resp.status()}`);
 
 // Mobile viewport smoke
 await page.setViewportSize({ width: 390, height: 844 });
-await page.goto(BASE + "/", { waitUntil: "networkidle" });
+await page.goto(BASE + "/museum", { waitUntil: "networkidle" });
 await page.waitForTimeout(3000);
 const chipCount = await page.locator(".bottom-16 button:visible").count();
 ok("mobile wing chips visible", chipCount === 5, `visible chips ${chipCount}`);
