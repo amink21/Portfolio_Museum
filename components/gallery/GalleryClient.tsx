@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import gsap from "gsap";
-import type { Category, Museum, Piece } from "@/lib/types";
+import type { Category, Piece } from "@/lib/types";
 import { computeMuseum } from "@/lib/gallery";
 import InspectOverlay from "./InspectOverlay";
 
@@ -20,12 +20,11 @@ const GalleryScene = dynamic(() => import("./GalleryScene"), {
 });
 
 interface Props {
-  museum: Museum;
   categories: Category[];
   pieces: Piece[];
 }
 
-export default function GalleryClient({ museum, categories, pieces }: Props) {
+export default function GalleryClient({ categories, pieces }: Props) {
   const layout = useMemo(
     () => computeMuseum(categories, pieces),
     [categories, pieces]
@@ -136,7 +135,6 @@ export default function GalleryClient({ museum, categories, pieces }: Props) {
   return (
     <main className="fixed inset-0 bg-base">
       <GalleryScene
-        museum={museum}
         layout={layout}
         onInspect={inspect}
         onLockChange={setLocked}
@@ -154,7 +152,7 @@ export default function GalleryClient({ museum, categories, pieces }: Props) {
           THE DESIGN MUSEUM
         </p>
         <h1 className="entry-line mt-4 font-display text-5xl font-semibold text-fg md:text-6xl">
-          {museum.name}
+          The Collection
         </h1>
         <p className="entry-line mt-4 font-mono text-[10px] tracking-[0.3em] text-muted">
           {pieces.length} WORKS · {layout.sections.length} SECTIONS · ONE WING
@@ -171,7 +169,7 @@ export default function GalleryClient({ museum, categories, pieces }: Props) {
             ← HOME
           </Link>
           <h2 className="mt-2 font-display text-lg font-semibold text-fg">
-            {museum.name}
+            The Collection
           </h2>
           <p className="font-mono text-[9px] tracking-[0.3em] text-accent">
             ONE WING · {pieces.length} WORKS

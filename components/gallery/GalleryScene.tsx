@@ -4,16 +4,16 @@ import { Suspense, useEffect, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer } from "@react-three/drei";
 import * as THREE from "three";
-import type { Museum, Piece } from "@/lib/types";
+import type { Piece } from "@/lib/types";
 import type { MuseumLayout } from "@/lib/gallery";
 import type { MutableRefObject } from "react";
 import Room from "./Room";
 import Artwork from "./Artwork";
 import Player from "./Player";
 import SectionPortal from "./SectionPortal";
+import { crowdFor, DustMotes, Plant, Stanchions, Visitor } from "./Decor";
 
 interface Props {
-  museum: Museum;
   layout: MuseumLayout;
   onInspect: (piece: Piece) => void;
   onLockChange: (locked: boolean) => void;
@@ -62,7 +62,6 @@ function CenterRaycast({ onInspect }: { onInspect: (piece: Piece) => void }) {
 }
 
 export default function GalleryScene({
-  museum,
   layout,
   onInspect,
   onLockChange,
@@ -89,13 +88,35 @@ export default function GalleryScene({
 
       <Suspense fallback={null}>
         <ReadySignal onReady={onReady} />
-        <Room title={museum.name} roomLength={layout.roomLength} />
+        <Room title="The Collection" roomLength={layout.roomLength} />
         {layout.hangs.map((hang, i) => (
           <Artwork key={hang.piece.slug} hang={hang} castShadow={i % 3 === 0} />
         ))}
         {layout.sections.map((s) => (
           <SectionPortal key={s.category.slug} section={s} />
         ))}
+
+        {/* Life in the hall: rope lines on featured works, visitors, plants, dust */}
+        {layout.hangs.map((hang, i) =>
+          i % 3 === 0 ? (
+            <Stanchions
+              key={`rope-${hang.piece.slug}`}
+              position={hang.position}
+              rotationY={hang.rotationY}
+            />
+          ) : null
+        )}
+        {crowdFor(layout.hangs, layout.roomLength).map((v, i) => (
+          <Visitor key={`visitor-${i}`} {...v} />
+        ))}
+        {layout.sections.map((s, i) => (
+          <Plant
+            key={`plant-${s.category.slug}`}
+            position={[i % 2 === 0 ? 3.9 : -3.9, 0, s.portalZ + 0.6]}
+            scale={0.95 + (i % 3) * 0.12}
+          />
+        ))}
+        <DustMotes roomLength={layout.roomLength} />
         <Environment resolution={64} frames={1}>
           <Lightformer
             intensity={0.9}

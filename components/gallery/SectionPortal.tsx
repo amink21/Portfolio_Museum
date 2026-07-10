@@ -58,13 +58,14 @@ export default function SectionPortal({ section }: { section: Section }) {
         <boxGeometry args={[ROOM_W - 0.9, 0.32, 0.2]} />
         <meshStandardMaterial color="#141416" roughness={0.5} metalness={0.6} />
       </mesh>
-      {/* Section colour strip under the lintel */}
-      <mesh position={[0, PORTAL_H - 0.015, 0]}>
-        <boxGeometry args={[ROOM_W - 0.9, 0.035, 0.21]} />
+      {/* Section colour strip under the lintel — kept shallow so it reads as a
+          thin line, not a slab, when walking directly beneath it */}
+      <mesh position={[0, PORTAL_H - 0.015, 0.08]}>
+        <boxGeometry args={[ROOM_W - 0.9, 0.035, 0.04]} />
         <meshStandardMaterial
           color={category.color}
           emissive={category.color}
-          emissiveIntensity={0.55}
+          emissiveIntensity={0.45}
           roughness={0.6}
         />
       </mesh>

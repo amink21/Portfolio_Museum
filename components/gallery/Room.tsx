@@ -70,9 +70,14 @@ function WallTitle({
 function Bench({ z }: { z: number }) {
   return (
     <group position={[0, 0, z]}>
-      <mesh position={[0, 0.42, 0]} castShadow receiveShadow>
-        <boxGeometry args={[2.0, 0.09, 0.52]} />
+      <mesh position={[0, 0.4, 0]} castShadow receiveShadow>
+        <boxGeometry args={[2.0, 0.07, 0.52]} />
         <meshStandardMaterial color="#2b2419" roughness={0.5} metalness={0.05} />
+      </mesh>
+      {/* leather pad */}
+      <mesh position={[0, 0.47, 0]} castShadow>
+        <boxGeometry args={[1.94, 0.07, 0.47]} />
+        <meshStandardMaterial color="#3a2e20" roughness={0.75} />
       </mesh>
       {[-0.82, 0.82].map((x) => (
         <mesh key={x} position={[x, 0.19, 0]} castShadow>
@@ -102,6 +107,13 @@ export default function Room({
   const fills = useMemo(() => {
     const zs: number[] = [];
     for (let z = L / 2 - 4; z > -L / 2 + 2; z -= 11) zs.push(z);
+    return zs;
+  }, [L]);
+
+  // Architectural rhythm: pilaster + ceiling coffer positions down the hall
+  const bays = useMemo(() => {
+    const zs: number[] = [];
+    for (let z = L / 2 - 7; z > -L / 2 + 4; z -= 4.6) zs.push(z);
     return zs;
   }, [L]);
 
@@ -213,6 +225,76 @@ export default function Room({
       {benches.map((z) => (
         <Bench key={z} z={z} />
       ))}
+
+      {/* Carpet runner down the center — breaks the mirror floor */}
+      <mesh rotation-x={-Math.PI / 2} position={[0, 0.006, 0]} receiveShadow>
+        <planeGeometry args={[2.3, L - 6]} />
+        <meshStandardMaterial color="#16141a" roughness={0.98} />
+      </mesh>
+      {[-1.18, 1.18].map((x) => (
+        <mesh key={`trimline-${x}`} rotation-x={-Math.PI / 2} position={[x, 0.007, 0]}>
+          <planeGeometry args={[0.05, L - 6]} />
+          <meshStandardMaterial color="#2c2a33" roughness={0.9} />
+        </mesh>
+      ))}
+
+      {/* Pilasters give the flat walls architectural rhythm; kept shallower
+          than the frames (0.07) so overlaps never poke through */}
+      {bays.map((z) =>
+        [-ROOM_W / 2 + 0.035, ROOM_W / 2 - 0.035].map((x) => (
+          <group key={`pilaster-${z}-${x}`} position={[x, 0, z]}>
+            <mesh position={[0, 1.7, 0]}>
+              <boxGeometry args={[0.05, 3.4, 0.4]} />
+              <meshStandardMaterial color="#d8d5cc" roughness={0.95} />
+            </mesh>
+            <mesh position={[0, 3.44, 0]}>
+              <boxGeometry args={[0.07, 0.1, 0.5]} />
+              <meshStandardMaterial color="#c9c6bc" roughness={0.92} />
+            </mesh>
+          </group>
+        ))
+      )}
+
+      {/* Crown moulding along both walls */}
+      {[-ROOM_W / 2 + 0.05, ROOM_W / 2 - 0.05].map((x) => (
+        <mesh key={`crown-${x}`} position={[x, ROOM_H - 0.32, 0]}>
+          <boxGeometry args={[0.08, 0.14, L]} />
+          <meshStandardMaterial color="#cfccc2" roughness={0.92} />
+        </mesh>
+      ))}
+
+      {/* Coffered ceiling beams between the skylight and the walls */}
+      {bays.map((z) =>
+        [-1, 1].map((s) => (
+          <mesh
+            key={`coffer-${z}-${s}`}
+            position={[s * (ROOM_W / 4 + 0.78), ROOM_H - 0.09, z]}
+          >
+            <boxGeometry args={[ROOM_W / 2 - 1.56, 0.16, 0.18]} />
+            <meshStandardMaterial color="#6f6353" roughness={0.9} />
+          </mesh>
+        ))
+      )}
+
+      {/* Entry doors behind the visitor — you came in through somewhere */}
+      <group position={[0, 0, L / 2 - 0.04]}>
+        {[-0.58, 0.58].map((x) => (
+          <mesh key={`door-${x}`} position={[x, 1.32, 0]}>
+            <boxGeometry args={[1.12, 2.64, 0.07]} />
+            <meshStandardMaterial color="#17171a" roughness={0.55} metalness={0.35} />
+          </mesh>
+        ))}
+        {[-0.16, 0.16].map((x) => (
+          <mesh key={`handle-${x}`} position={[x, 1.25, 0.06]}>
+            <cylinderGeometry args={[0.018, 0.018, 0.5, 10]} />
+            <meshStandardMaterial color="#43434a" roughness={0.3} metalness={0.9} />
+          </mesh>
+        ))}
+        <mesh position={[0, 2.72, 0]}>
+          <boxGeometry args={[2.4, 0.12, 0.1]} />
+          <meshStandardMaterial color="#121215" roughness={0.5} metalness={0.4} />
+        </mesh>
+      </group>
     </group>
   );
 }

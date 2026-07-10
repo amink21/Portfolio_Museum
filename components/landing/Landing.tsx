@@ -11,22 +11,6 @@ gsap.registerPlugin(ScrollTrigger);
 const chip =
   "rounded-md border border-[rgba(244,244,245,0.14)] px-2 py-0.5 font-mono text-[10px] tracking-[0.08em] text-muted";
 
-/** Salon-wall positions for the artwork hiding in the hero's dark. */
-// Kept clear of the headline/paragraph block (roughly left 12–62%, top 18–62%)
-const COLLAGE: Array<{ left: string; top: string; w: number; r: number }> = [
-  { left: "4%", top: "12%", w: 180, r: -6 },
-  { left: "2%", top: "70%", w: 160, r: 3 },
-  { left: "20%", top: "80%", w: 150, r: 6 },
-  { left: "36%", top: "78%", w: 155, r: -3 },
-  { left: "52%", top: "70%", w: 190, r: 5 },
-  { left: "58%", top: "8%", w: 170, r: -5 },
-  { left: "74%", top: "34%", w: 205, r: 3 },
-  { left: "88%", top: "66%", w: 150, r: -4 },
-  { left: "92%", top: "10%", w: 145, r: 5 },
-  { left: "70%", top: "80%", w: 175, r: -2 },
-  { left: "44%", top: "8%", w: 150, r: -3 },
-];
-
 function ProjectLinks({ p, big }: { p: CodeProject; big?: boolean }) {
   const cls = `font-mono ${big ? "text-[12px]" : "text-[11px]"} tracking-[0.16em]`;
   if (!p.github && !p.live && !p.appstore)
@@ -60,8 +44,6 @@ export default function Landing({ data }: { data: MuseumData }) {
   const [booted, setBooted] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLElement>(null);
-  const collageRef = useRef<HTMLDivElement>(null);
 
   // ---- Preloader: AK. + counter, then the curtain lifts ----
   useEffect(() => {
@@ -177,44 +159,6 @@ export default function Landing({ data }: { data: MuseumData }) {
     };
   }, [booted]);
 
-  // ---- Curator's flashlight: cursor reveals the collection in the dark ----
-  useEffect(() => {
-    const hero = heroRef.current;
-    const collage = collageRef.current;
-    if (!hero || !collage) return;
-    const coarse = window.matchMedia("(pointer: coarse)").matches;
-    if (coarse) {
-      // no cursor on touch: drift the light on its own
-      const spot = { x: 25, y: 30 };
-      const tween = gsap.to(spot, {
-        x: 75,
-        y: 65,
-        duration: 7,
-        yoyo: true,
-        repeat: -1,
-        ease: "sine.inOut",
-        onUpdate: () => {
-          collage.style.setProperty("--mx", `${spot.x}%`);
-          collage.style.setProperty("--my", `${spot.y}%`);
-        },
-      });
-      return () => {
-        tween.kill();
-      };
-    }
-    const driftX = gsap.quickTo(collage, "x", { duration: 1.1, ease: "power3" });
-    const driftY = gsap.quickTo(collage, "y", { duration: 1.1, ease: "power3" });
-    const move = (e: MouseEvent) => {
-      const r = hero.getBoundingClientRect();
-      collage.style.setProperty("--mx", `${e.clientX - r.left}px`);
-      collage.style.setProperty("--my", `${e.clientY - r.top}px`);
-      driftX(((e.clientX - r.left) / r.width - 0.5) * -18);
-      driftY(((e.clientY - r.top) / r.height - 0.5) * -12);
-    };
-    hero.addEventListener("mousemove", move);
-    return () => hero.removeEventListener("mousemove", move);
-  }, []);
-
   const showPreview = (src: string) => {
     setPreviewSrc(src);
     gsap.to(previewRef.current, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "power3.out" });
@@ -291,11 +235,7 @@ export default function Landing({ data }: { data: MuseumData }) {
       </nav>
 
       {/* Hero */}
-      <section
-        id="top"
-        ref={heroRef}
-        className="relative overflow-hidden px-6 pb-24 pt-40 md:pt-48"
-      >
+      <section id="top" className="relative overflow-hidden px-6 pb-24 pt-40 md:pt-48">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
@@ -314,40 +254,7 @@ export default function Landing({ data }: { data: MuseumData }) {
           }}
         />
 
-        {/* The collection, hiding in the dark until the light finds it */}
-        <div
-          ref={collageRef}
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            WebkitMaskImage:
-              "radial-gradient(circle 330px at var(--mx, 72%) var(--my, 35%), black 42%, transparent 80%)",
-            maskImage:
-              "radial-gradient(circle 330px at var(--mx, 72%) var(--my, 35%), black 42%, transparent 80%)",
-          }}
-        >
-          {COLLAGE.map((c, i) => {
-            const piece = pieces[i % pieces.length];
-            return (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={i}
-                src={piece.image}
-                alt=""
-                loading="lazy"
-                className="absolute rounded-sm border-[5px] border-[#efece4] shadow-[0_18px_50px_rgba(0,0,0,0.65)]"
-                style={{
-                  left: c.left,
-                  top: c.top,
-                  width: c.w,
-                  transform: `rotate(${c.r}deg)`,
-                }}
-              />
-            );
-          })}
-        </div>
-
-        <div className="pointer-events-none relative mx-auto max-w-6xl">
+        <div className="relative mx-auto max-w-6xl">
           <p className="hero-line font-mono text-[11px] tracking-[0.3em] text-accent">
             MONTREAL · SOFTWARE DEVELOPER & DESIGNER
           </p>
@@ -357,7 +264,7 @@ export default function Landing({ data }: { data: MuseumData }) {
               Design that hangs{" "}
               <Link
                 href="/museum"
-                className="pointer-events-auto text-accent underline decoration-[rgba(79,127,255,0.4)] decoration-2 underline-offset-8 transition-colors hover:text-fg"
+                className="text-accent underline decoration-[rgba(79,127,255,0.4)] decoration-2 underline-offset-8 transition-colors hover:text-fg"
               >
                 in a museum
               </Link>
@@ -370,13 +277,13 @@ export default function Landing({ data }: { data: MuseumData }) {
           <div className="hero-line mt-9 flex flex-wrap items-center gap-4">
             <a
               href="#projects"
-              className="pointer-events-auto rounded-lg bg-accent px-5 py-3 font-mono text-[11px] tracking-[0.2em] text-base transition-opacity hover:opacity-85"
+              className="rounded-lg bg-accent px-5 py-3 font-mono text-[11px] tracking-[0.2em] text-base transition-opacity hover:opacity-85"
             >
               VIEW PROJECTS ↓
             </a>
             <Link
               href="/museum"
-              className="group pointer-events-auto rounded-lg border border-[rgba(79,127,255,0.5)] px-5 py-3 font-mono text-[11px] tracking-[0.2em] text-accent transition-colors hover:bg-accent hover:text-base"
+              className="group rounded-lg border border-[rgba(79,127,255,0.5)] px-5 py-3 font-mono text-[11px] tracking-[0.2em] text-accent transition-colors hover:bg-accent hover:text-base"
             >
               ENTER THE DESIGN MUSEUM{" "}
               <span className="inline-block transition-transform group-hover:translate-x-1">
@@ -384,9 +291,6 @@ export default function Landing({ data }: { data: MuseumData }) {
               </span>
             </Link>
           </div>
-          <p className="hero-line mt-10 font-mono text-[10px] tracking-[0.24em] text-muted">
-            ◐ THE COLLECTION IS HIDING IN THE DARK — MOVE YOUR LIGHT
-          </p>
         </div>
       </section>
 
