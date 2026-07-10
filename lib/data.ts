@@ -1,0 +1,49 @@
+import "server-only";
+import type { Category, Museum, MuseumData, Piece } from "./types";
+import seed from "@/data/seed.json";
+
+const seedData = seed as unknown as MuseumData;
+
+/**
+ * Returns all museum content. Reads Neon when DATABASE_URL is set,
+ * otherwise falls back to the bundled seed.json so the site works
+ * before the database exists.
+ */
+export async function getMuseumData(): Promise<MuseumData> {
+  if (!process.env.DATABASE_URL) return seedData;
+  try {
+    const { neon } = await import("@neondatabase/serverless");
+    const sql = neon(process.env.DATABASE_URL);
+    const [museumRows, categoryRows, pieceRows] = await Promise.all([
+      sql`SELECT name, tagline, about, contact FROM museum WHERE id = 1`,
+      sql`SELECT slug, name, wing, color, color_name, ordinal, blurb FROM categories ORDER BY ordinal`,
+      sql`SELECT slug, title, category_slug, year, year_is_placeholder, image, catalog_no, description, description_is_placeholder FROM pieces ORDER BY year, catalog_no`,
+    ]);
+    if (categoryRows.length === 0 || pieceRows.length === 0) return seedData;
+    const museum: Museum = (museumRows[0] as Museum | undefined) ?? seedData.museum;
+    const categories: Category[] = categoryRows.map((r) => ({
+      slug: r.slug,
+      name: r.name,
+      wing: r.wing,
+      color: r.color,
+      colorName: r.color_name,
+      ordinal: r.ordinal,
+      blurb: r.blurb,
+    }));
+    const pieces: Piece[] = pieceRows.map((r) => ({
+      slug: r.slug,
+      title: r.title,
+      category: r.category_slug,
+      year: r.year,
+      yearIsPlaceholder: r.year_is_placeholder,
+      image: r.image,
+      catalogNo: r.catalog_no,
+      description: r.description,
+      descriptionIsPlaceholder: r.description_is_placeholder,
+    }));
+    return { museum, categories, pieces };
+  } catch (err) {
+    console.error("Neon query failed, serving seed data:", err);
+    return seedData;
+  }
+}

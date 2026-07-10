@@ -1,0 +1,326 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #0b0c0e;
+  --ink-raised: #121317;
+  --parchment: #ede8de;
+  --parchment-dim: #b8b2a4;
+  --brass: #c9a227;
+  --brass-dim: #8a7120;
+  --wing-rose: #bc8f8f;
+  --wing-slate: #7d8fa8;
+  --wing-sage: #8fa48b;
+  --wing-amber: #c98f4b;
+  --wing-plum: #9a7aa0;
+  --hairline: rgba(237, 232, 222, 0.16);
+  --hairline-strong: rgba(237, 232, 222, 0.32);
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-raised: var(--ink-raised);
+  --color-parchment: var(--parchment);
+  --color-parchment-dim: var(--parchment-dim);
+  --color-brass: var(--brass);
+  --color-brass-dim: var(--brass-dim);
+  --font-serif: var(--font-fraunces);
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
+}
+
+html,
+body {
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: var(--font-plex-sans), system-ui, sans-serif;
+  overscroll-behavior: none;
+}
+
+::selection {
+  background: var(--brass);
+  color: var(--ink);
+}
+
+/* Subtle paper grain over the ink background */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+.font-serif {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+.font-mono {
+  font-family: var(--font-plex-mono), monospace;
+}
+
+/* Architectural hatching for wing floors */
+.hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 7px,
+    currentColor 7px,
+    currentColor 7.75px
+  );
+}
+
+/* Engraved brass plaque surface */
+.plaque {
+  background:
+    radial-gradient(120% 140% at 20% 0%, rgba(255, 240, 200, 0.16), transparent 45%),
+    radial-gradient(130% 120% at 85% 100%, rgba(0, 0, 0, 0.35), transparent 50%),
+    linear-gradient(160deg, #2a2415 0%, #1b1810 55%, #241f12 100%);
+  border: 1px solid rgba(201, 162, 39, 0.4);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 235, 180, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+    0 24px 60px rgba(0, 0, 0, 0.55);
+}
+
+.plaque-screw {
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, #e8cf8a, #8a7120 65%, #4c3f14);
+  box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.45);
+  position: absolute;
+}
+.plaque-screw::after {
+  content: "";
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  top: 45%;
+  height: 1px;
+  background: rgba(20, 16, 6, 0.8);
+  transform: rotate(-30deg);
+}
+
+.engraved {
+  color: transparent;
+  background: linear-gradient(180deg, #f0dfae 0%, #c9a227 45%, #7d6414 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 1px 0 rgba(255, 245, 210, 0.08);
+  letter-spacing: 0.04em;
+}
+
+.hairline {
+  border-color: var(--hairline);
+}
+
+/* ============ Floor plan (timeline) ============ */
+.fp-viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.fp-viewport.dragging {
+  cursor: grabbing;
+}
+.fp-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+/* Wings */
+.fp-wing {
+  position: absolute;
+  transition: opacity 0.6s ease, filter 0.6s ease;
+}
+.fp-wing-floor {
+  position: absolute;
+  inset: 0;
+}
+.fp-wing-wall {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--hairline-strong);
+  transition: border-color 0.6s ease, box-shadow 0.6s ease;
+}
+.fp-wing-wall::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid var(--hairline);
+  pointer-events: none;
+}
+.fp-wing.focused .fp-wing-wall {
+  border-color: rgba(201, 162, 39, 0.55);
+  box-shadow: 0 0 60px rgba(201, 162, 39, 0.07) inset;
+}
+.fp-door {
+  position: absolute;
+  top: -2px;
+  height: 2px;
+  width: 96px;
+  background: var(--ink);
+}
+.fp-door::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 96px;
+  height: 48px;
+  border: 1px dashed var(--hairline);
+  border-bottom: none;
+  border-right: none;
+  border-radius: 96px 0 0 0;
+  opacity: 0.6;
+}
+.fp-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: var(--brass-dim);
+  border-style: solid;
+  border-width: 0;
+  opacity: 0.9;
+}
+
+/* Nodes */
+.fp-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.6s ease, filter 0.6s ease;
+}
+.fp-node > button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+.fp-medallion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--brass);
+  color: var(--brass);
+  background: radial-gradient(circle at 35% 30%, #191a1f, #0b0c0e 70%);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  box-shadow:
+    0 0 0 4px rgba(201, 162, 39, 0.08),
+    0 6px 18px rgba(0, 0, 0, 0.55);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.fp-node > button:hover .fp-medallion {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 0 7px rgba(201, 162, 39, 0.16),
+    0 10px 26px rgba(0, 0, 0, 0.6);
+}
+.fp-node-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  text-align: center;
+  max-width: 190px;
+}
+.fp-node-label .t {
+  font-family: var(--font-fraunces), serif;
+  font-size: 15px;
+  color: var(--parchment);
+  line-height: 1.2;
+}
+.fp-node-label .y {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 10px;
+  color: var(--brass);
+  letter-spacing: 0.14em;
+}
+[data-zoom="mid"] .fp-node-label,
+[data-zoom="near"] .fp-node-label {
+  opacity: 1;
+}
+.fp-thumb {
+  position: absolute;
+  top: calc(100% + 14px);
+  width: 216px;
+  padding: 7px;
+  background: #101116;
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+  pointer-events: none;
+}
+.fp-thumb img {
+  display: block;
+  width: 100%;
+  height: 128px;
+  object-fit: cover;
+  filter: saturate(0.92);
+}
+[data-zoom="near"] .fp-thumb {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fp-wing.dimmed,
+.fp-node.dimmed {
+  opacity: 0.1;
+  filter: grayscale(0.85);
+  pointer-events: none;
+}
+
+/* Directory (filter) */
+.dir-entry {
+  position: relative;
+  transition: color 0.3s ease, opacity 0.3s ease;
+}
+.dir-entry::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--brass), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.dir-entry:hover::after,
+.dir-entry.active::after {
+  transform: scaleX(1);
+}
+
+/* Scrollbar befitting the archive */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ink);
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2b30;
+  border-radius: 5px;
+}

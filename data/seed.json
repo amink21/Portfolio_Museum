@@ -1,0 +1,322 @@
+{
+  "_note": "PLACEHOLDER DATA — Amin: every field marked [PLACEHOLDER] and every yearIsPlaceholder:true needs your real value. Titles are derived from your original file names; descriptions are intentionally blank prompts, not AI-written facts. Edit here, then run `npm run db:seed` to push to Neon.",
+  "museum": {
+    "name": "The Kadawala Collection",
+    "tagline": "A working museum of graphic design by Amin Kadawala",
+    "about": "Designer & developer based in Montreal. Concordia University Computer Science graduate; builds enterprise software for the Department of National Defence by day and crafted the graphic work in this collection independently.",
+    "contact": "aminkadawala@gmail.com"
+  },
+  "categories": [
+    {
+      "slug": "logos-branding",
+      "name": "Logos & Branding",
+      "wing": "Wing I",
+      "color": "#BC8F8F",
+      "colorName": "Dusty Rose",
+      "ordinal": 1,
+      "blurb": "[PLACEHOLDER] A line about your identity & logotype work."
+    },
+    {
+      "slug": "cover-art",
+      "name": "Cover Art",
+      "wing": "Wing II",
+      "color": "#7D8FA8",
+      "colorName": "Slate Blue",
+      "ordinal": 2,
+      "blurb": "[PLACEHOLDER] A line about your album & book cover work."
+    },
+    {
+      "slug": "headers-banners",
+      "name": "Headers & Banners",
+      "wing": "Wing III",
+      "color": "#8FA48B",
+      "colorName": "Sage",
+      "ordinal": 3,
+      "blurb": "[PLACEHOLDER] A line about your channel art & banner work."
+    },
+    {
+      "slug": "print-stationery",
+      "name": "Print & Stationery",
+      "wing": "Wing IV",
+      "color": "#C98F4B",
+      "colorName": "Amber",
+      "ordinal": 4,
+      "blurb": "[PLACEHOLDER] A line about your print & stationery work."
+    },
+    {
+      "slug": "concept-illustration",
+      "name": "Concept & Illustration",
+      "wing": "Wing V",
+      "color": "#9A7AA0",
+      "colorName": "Plum",
+      "ordinal": 5,
+      "blurb": "[PLACEHOLDER] A line about your concept art & illustration work."
+    }
+  ],
+  "pieces": [
+    {
+      "slug": "deen-sports-logo",
+      "title": "Deen Sports — Logotype",
+      "category": "logos-branding",
+      "year": 2021,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/DeenSportsLogo.jpg",
+      "catalogNo": "LB.001",
+      "description": "[PLACEHOLDER] The story behind the Deen Sports logo — who it was for, the brief, why it mattered.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "designify-logo",
+      "title": "Designify — Logotype",
+      "category": "logos-branding",
+      "year": 2020,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/DesignifyLogo.jpg",
+      "catalogNo": "LB.002",
+      "description": "[PLACEHOLDER] The story behind the Designify logo.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "photobooth-mtl-logo",
+      "title": "Photobooth MTL — Logotype",
+      "category": "logos-branding",
+      "year": 2022,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/PhotoboothMTL_Logo.jpg",
+      "catalogNo": "LB.003",
+      "description": "[PLACEHOLDER] The story behind the Photobooth MTL logo.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "tasting-to-logos",
+      "title": "Tasting.to — Logo Suite",
+      "category": "logos-branding",
+      "year": 2022,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/tasting.toLogos.jpg",
+      "catalogNo": "LB.004",
+      "description": "[PLACEHOLDER] The story behind the Tasting.to logo explorations.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "pokemon-nike-logos",
+      "title": "Pokémon × Nike — Logo Set",
+      "category": "logos-branding",
+      "year": 2019,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/PokemonNikeLogos.jpg",
+      "catalogNo": "LB.005",
+      "description": "[PLACEHOLDER] The story behind the Pokémon × Nike concept logo set.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "album-cover",
+      "title": "Album Cover",
+      "category": "cover-art",
+      "year": 2020,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/albumCover.jpg",
+      "catalogNo": "CA.001",
+      "description": "[PLACEHOLDER] Who the album was for and how the cover came together.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "validation-cover-art",
+      "title": "Validation — Cover Art",
+      "category": "cover-art",
+      "year": 2021,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/CoverArtValidation.jpg",
+      "catalogNo": "CA.002",
+      "description": "[PLACEHOLDER] The story behind the Validation cover.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "book-cover-1",
+      "title": "Book Cover I",
+      "category": "cover-art",
+      "year": 2021,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/bookCover1.jpg",
+      "catalogNo": "CA.003",
+      "description": "[PLACEHOLDER] The story behind this book cover.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "book-cover-2",
+      "title": "Book Cover II",
+      "category": "cover-art",
+      "year": 2022,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/bookCover2.jpg",
+      "catalogNo": "CA.004",
+      "description": "[PLACEHOLDER] The story behind this book cover.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "klaav-header",
+      "title": "Klaav — Channel Header",
+      "category": "headers-banners",
+      "year": 2020,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/KlaavHeader.jpg",
+      "catalogNo": "HB.001",
+      "description": "[PLACEHOLDER] The story behind the Klaav header.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "obeyjames-header",
+      "title": "ObeyJames — Channel Header",
+      "category": "headers-banners",
+      "year": 2019,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/ObeyJamesHeader.jpg",
+      "catalogNo": "HB.002",
+      "description": "[PLACEHOLDER] The story behind the ObeyJames header.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "r3d-formula-header",
+      "title": "R3D Formula — Channel Header",
+      "category": "headers-banners",
+      "year": 2020,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/R3DFormulaHeader.jpg",
+      "catalogNo": "HB.003",
+      "description": "[PLACEHOLDER] The story behind the R3D Formula header.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "nelk-banner",
+      "title": "Nelk — Banner",
+      "category": "headers-banners",
+      "year": 2019,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/nelkBanner.jpg",
+      "catalogNo": "HB.004",
+      "description": "[PLACEHOLDER] The story behind the Nelk banner.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "tierial-banner",
+      "title": "Tierial — Banner",
+      "category": "headers-banners",
+      "year": 2021,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/tierialBanner.jpg",
+      "catalogNo": "HB.005",
+      "description": "[PLACEHOLDER] The story behind the Tierial banner.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "d1-card",
+      "title": "D1 — Card",
+      "category": "print-stationery",
+      "year": 2021,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/d1Card.jpg",
+      "catalogNo": "PS.001",
+      "description": "[PLACEHOLDER] The story behind the D1 card.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "detail-business-card",
+      "title": "Detail — Business Card",
+      "category": "print-stationery",
+      "year": 2022,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/DetailBusinessCard.jpg",
+      "catalogNo": "PS.002",
+      "description": "[PLACEHOLDER] The story behind the Detail business card.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "nikkah-contract",
+      "title": "Nikkah Contract",
+      "category": "print-stationery",
+      "year": 2023,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/NikkahContract.jpg",
+      "catalogNo": "PS.003",
+      "description": "[PLACEHOLDER] The story behind the Nikkah contract design.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "charizard-nike",
+      "title": "Charizard × Nike — Concept",
+      "category": "concept-illustration",
+      "year": 2019,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/CharizardNike.jpg",
+      "catalogNo": "CI.001",
+      "description": "[PLACEHOLDER] The story behind the Charizard × Nike concept.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "nike-simba",
+      "title": "Nike Simba — Concept",
+      "category": "concept-illustration",
+      "year": 2019,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/NikeSimba.jpg",
+      "catalogNo": "CI.002",
+      "description": "[PLACEHOLDER] The story behind the Nike Simba concept.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "obey-rc",
+      "title": "Obey RC — Concept",
+      "category": "concept-illustration",
+      "year": 2020,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/ObeyRC.jpg",
+      "catalogNo": "CI.003",
+      "description": "[PLACEHOLDER] The story behind the Obey RC piece.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "obey-ad",
+      "title": "Obey — Advertisement Concept",
+      "category": "concept-illustration",
+      "year": 2020,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/obeyAd.jpg",
+      "catalogNo": "CI.004",
+      "description": "[PLACEHOLDER] The story behind the Obey ad concept.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "balloon-to",
+      "title": "Balloon Toronto — Illustration",
+      "category": "concept-illustration",
+      "year": 2021,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/balloonTO.jpg",
+      "catalogNo": "CI.005",
+      "description": "[PLACEHOLDER] The story behind the Balloon Toronto illustration.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "duck-wallpaper",
+      "title": "Duck Wallpaper — Illustration",
+      "category": "concept-illustration",
+      "year": 2022,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/duckWallpaper.jpg",
+      "catalogNo": "CI.006",
+      "description": "[PLACEHOLDER] The story behind the duck wallpaper.",
+      "descriptionIsPlaceholder": true
+    },
+    {
+      "slug": "nft-motion-series",
+      "title": "NFT Series — Motion",
+      "category": "concept-illustration",
+      "year": 2022,
+      "yearIsPlaceholder": true,
+      "image": "/artwork/nfts.gif",
+      "catalogNo": "CI.007",
+      "description": "[PLACEHOLDER] The story behind the animated NFT series.",
+      "descriptionIsPlaceholder": true
+    }
+  ]
+}
