@@ -37,10 +37,10 @@ function WallTitle({
       ctx.fillStyle = category.color;
       ctx.font = "500 46px 'IBM Plex Mono', monospace";
       ctx.fillText(category.wing.toUpperCase().split("").join(" "), 1024, 170);
-      ctx.fillStyle = "#26231d";
-      ctx.font = "600 170px Fraunces, Georgia, serif";
+      ctx.fillStyle = "#1c1c20";
+      ctx.font = "600 160px 'Space Grotesk', sans-serif";
       ctx.fillText(category.name, 1024, 400);
-      ctx.strokeStyle = "rgba(40,37,30,0.5)";
+      ctx.strokeStyle = "rgba(30,30,36,0.5)";
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(700, 500);
@@ -199,16 +199,16 @@ export default function Room({
         <meshStandardMaterial color={WALL} roughness={0.96} />
       </mesh>
 
-      {/* Brass baseboards */}
+      {/* Steel baseboards */}
       {[-ROOM_W / 2 + 0.03, ROOM_W / 2 - 0.03].map((x) => (
         <mesh key={`base-${x}`} position={[x, 0.05, 0]}>
           <boxGeometry args={[0.03, 0.1, L]} />
-          <meshStandardMaterial color="#c9a227" roughness={0.38} metalness={0.95} />
+          <meshStandardMaterial color="#232327" roughness={0.38} metalness={0.95} />
         </mesh>
       ))}
       <mesh position={[0, 0.05, -L / 2 + 0.03]}>
         <boxGeometry args={[ROOM_W, 0.1, 0.03]} />
-        <meshStandardMaterial color="#c9a227" roughness={0.38} metalness={0.95} />
+        <meshStandardMaterial color="#232327" roughness={0.38} metalness={0.95} />
       </mesh>
 
       {benches.map((z) => (

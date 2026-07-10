@@ -21,8 +21,20 @@ page.on("console", (m) => {
     errors.push(`console: ${m.text()} @ ${m.location().url}`);
 });
 
-// --- Timeline ---
+// --- Landing ---
 await page.goto(BASE + "/", { waitUntil: "networkidle" });
+await page.waitForTimeout(2200);
+ok("landing loads", (await page.title()).includes("Amin Kadawala"));
+const cards = await page.locator("#projects article").count();
+ok("coding project cards", cards >= 9, `found ${cards}`);
+ok(
+  "museum CTA present",
+  (await page.locator("text=ENTER THE MUSEUM").count()) >= 1
+);
+await page.screenshot({ path: `${OUT}/q0-landing.png` });
+
+// --- Timeline ---
+await page.goto(BASE + "/museum", { waitUntil: "networkidle" });
 await page.waitForTimeout(3200);
 ok("timeline loads", (await page.title()).includes("Kadawala"));
 const medallions = await page.locator(".fp-node").count();

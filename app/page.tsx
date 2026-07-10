@@ -1,9 +1,9 @@
 import { getMuseumData } from "@/lib/data";
-import FloorPlan from "@/components/timeline/FloorPlan";
+import Landing from "@/components/landing/Landing";
 
 export const revalidate = 300;
 
 export default async function Home() {
   const data = await getMuseumData();
-  return <FloorPlan data={data} />;
+  return <Landing data={data} />;
 }

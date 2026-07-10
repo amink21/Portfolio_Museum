@@ -13,36 +13,42 @@ page.on("console", (m) => {
   if (m.type() === "error") errors.push(`console: ${m.text()}`);
 });
 
-// 1. Timeline far view
+// 1. Landing
 await page.goto(BASE + "/", { waitUntil: "networkidle" });
-await page.waitForTimeout(3500);
-await page.screenshot({ path: `${OUT}/1-timeline-far.png` });
+await page.waitForTimeout(2500);
+await page.screenshot({ path: `${OUT}/1-landing.png` });
 
-// 2. Zoom in a couple of steps at a wing
+// 2. Landing — museum section
+await page.evaluate(() =>
+  document.querySelector("#museum")?.scrollIntoView({ behavior: "instant" })
+);
+await page.waitForTimeout(1500);
+await page.screenshot({ path: `${OUT}/2-landing-museum.png` });
+
+// 3. Museum timeline
+await page.goto(BASE + "/museum", { waitUntil: "networkidle" });
+await page.waitForTimeout(3500);
+await page.screenshot({ path: `${OUT}/3-timeline.png` });
+
+// 4. Plaque card
 await page.mouse.move(800, 500);
-for (let i = 0; i < 14; i++) {
+for (let i = 0; i < 8; i++) {
   await page.mouse.wheel(0, -240);
   await page.waitForTimeout(70);
 }
-await page.waitForTimeout(1200);
-await page.screenshot({ path: `${OUT}/2-timeline-near.png` });
-
-// 3. Open a plaque card
+await page.waitForTimeout(1000);
 await page.evaluate(() => {
-  const btn = document.querySelector(".fp-node button");
-  btn?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  document
+    .querySelector(".fp-node button")
+    ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
 });
-await page.waitForTimeout(1600);
-await page.screenshot({ path: `${OUT}/3-plaque-card.png` });
+await page.waitForTimeout(1500);
+await page.screenshot({ path: `${OUT}/4-card.png` });
 
-// 4. Gallery
+// 5. Gallery
 await page.goto(BASE + "/gallery/cover-art", { waitUntil: "networkidle" });
 await page.waitForTimeout(7000);
-await page.screenshot({ path: `${OUT}/4-gallery.png` });
-
-// 5. Gallery second angle (walk forward a bit is hard without lock; just wait)
-await page.waitForTimeout(1500);
-await page.screenshot({ path: `${OUT}/5-gallery-b.png` });
+await page.screenshot({ path: `${OUT}/5-gallery.png` });
 
 console.log("ERRORS:", errors.length ? errors.join("\n") : "none");
 await browser.close();

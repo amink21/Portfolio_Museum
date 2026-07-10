@@ -14,22 +14,22 @@ export default function Directory({ categories, counts, active, onSelect }: Prop
   return (
     <nav
       aria-label="Wing directory"
-      className="pointer-events-auto fixed right-6 top-1/2 z-30 hidden w-60 -translate-y-1/2 border border-[rgba(201,162,39,0.3)] bg-[rgba(11,12,14,0.82)] p-5 backdrop-blur-md md:block"
+      className="pointer-events-auto fixed right-6 top-1/2 z-30 hidden w-60 -translate-y-1/2 border border-[rgba(79,127,255,0.3)] bg-[rgba(11,12,14,0.82)] p-5 backdrop-blur-md md:block"
     >
-      <p className="font-mono text-[10px] tracking-[0.3em] text-brass">
+      <p className="font-mono text-[10px] tracking-[0.3em] text-accent">
         DIRECTORY
       </p>
-      <div className="mt-1 h-px w-full bg-gradient-to-r from-[rgba(201,162,39,0.5)] to-transparent" />
+      <div className="mt-1 h-px w-full bg-gradient-to-r from-[rgba(79,127,255,0.5)] to-transparent" />
       <ul className="mt-4 space-y-3">
         <li>
           <button
             onClick={() => onSelect(null)}
-            className={`dir-entry block w-full text-left font-serif text-[15px] ${
-              active === null ? "active text-parchment" : "text-parchment-dim hover:text-parchment"
+            className={`dir-entry block w-full text-left font-display text-[15px] ${
+              active === null ? "active text-fg" : "text-muted hover:text-fg"
             }`}
           >
             All Wings
-            <span className="ml-2 font-mono text-[10px] text-brass-dim">
+            <span className="ml-2 font-mono text-[10px] text-accent-dim">
               {Object.values(counts).reduce((a, b) => a + b, 0)}
             </span>
           </button>
@@ -48,20 +48,20 @@ export default function Directory({ categories, counts, active, onSelect }: Prop
                   style={{ background: c.color }}
                 />
                 <span
-                  className={`font-serif text-[15px] leading-tight ${
-                    active === c.slug ? "text-parchment" : "text-parchment-dim"
+                  className={`font-display text-[15px] leading-tight ${
+                    active === c.slug ? "text-fg" : "text-muted"
                   }`}
                 >
                   {c.name}
                 </span>
               </span>
-              <span className="mt-0.5 block pl-4 font-mono text-[10px] tracking-[0.18em] text-brass-dim">
+              <span className="mt-0.5 block pl-4 font-mono text-[10px] tracking-[0.18em] text-accent-dim">
                 {c.wing.toUpperCase()} · {counts[c.slug] ?? 0} WORKS
               </span>
             </button>
             <Link
               href={`/gallery/${c.slug}`}
-              className="mt-1 block pl-4 font-mono text-[10px] tracking-[0.2em] text-brass transition-colors hover:text-parchment"
+              className="mt-1 block pl-4 font-mono text-[10px] tracking-[0.2em] text-accent transition-colors hover:text-fg"
             >
               ENTER 3D GALLERY →
             </Link>

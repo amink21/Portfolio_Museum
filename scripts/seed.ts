@@ -50,8 +50,17 @@ async function main() {
         description = EXCLUDED.description, description_is_placeholder = EXCLUDED.description_is_placeholder`;
   }
 
+  for (const p of data.codeProjects) {
+    await sql`
+      INSERT INTO code_projects (slug, title, description, tech, github, live, image, featured, ordinal)
+      VALUES (${p.slug}, ${p.title}, ${p.description}, ${p.tech}, ${p.github}, ${p.live}, ${p.image}, ${p.featured}, ${p.ordinal})
+      ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title, description = EXCLUDED.description,
+        tech = EXCLUDED.tech, github = EXCLUDED.github, live = EXCLUDED.live,
+        image = EXCLUDED.image, featured = EXCLUDED.featured, ordinal = EXCLUDED.ordinal`;
+  }
+
   console.log(
-    `Seeded ${data.categories.length} categories, ${data.pieces.length} pieces.`
+    `Seeded ${data.categories.length} categories, ${data.pieces.length} pieces, ${data.codeProjects.length} code projects.`
   );
 }
 

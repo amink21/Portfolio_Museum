@@ -8,7 +8,6 @@ import {
   AXIS_H,
   computePlan,
   MARGIN_X,
-  toRoman,
   yearX,
   type WingRect,
 } from "@/lib/floorplan";
@@ -249,14 +248,20 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
       {/* Fixed chrome */}
       <header className="pointer-events-none fixed left-0 right-0 top-0 z-30 flex items-start justify-between p-6 md:p-8">
         <div>
-          <h1 className="font-serif text-xl tracking-wide text-parchment md:text-2xl">
+          <Link
+            href="/"
+            className="pointer-events-auto font-mono text-[10px] tracking-[0.26em] text-muted transition-colors hover:text-accent"
+          >
+            ← HOME
+          </Link>
+          <h1 className="mt-2 font-display text-xl font-semibold tracking-wide text-fg md:text-2xl">
             {data.museum.name}
           </h1>
-          <p className="mt-1 font-mono text-[10px] tracking-[0.3em] text-brass">
-            FLOOR PLAN — LEVEL I
+          <p className="mt-1 font-mono text-[10px] tracking-[0.3em] text-accent">
+            DESIGN MUSEUM — TIMELINE
           </p>
         </div>
-        <p className="hidden max-w-[260px] text-right font-mono text-[10px] leading-relaxed tracking-[0.14em] text-parchment-dim md:block">
+        <p className="hidden max-w-[260px] text-right font-mono text-[10px] leading-relaxed tracking-[0.14em] text-muted md:block">
           {data.museum.tagline.toUpperCase()}
         </p>
       </header>
@@ -276,8 +281,8 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
             onClick={() => focusWing(filter === c.slug ? null : c.slug)}
             className={`shrink-0 border px-3 py-1.5 font-mono text-[10px] tracking-[0.14em] backdrop-blur-md ${
               filter === c.slug
-                ? "border-brass bg-[rgba(201,162,39,0.15)] text-brass"
-                : "border-[rgba(237,232,222,0.2)] bg-[rgba(11,12,14,0.7)] text-parchment-dim"
+                ? "border-accent bg-[rgba(79,127,255,0.15)] text-accent"
+                : "border-[rgba(244,244,245,0.2)] bg-[rgba(11,12,14,0.7)] text-muted"
             }`}
           >
             {c.name.toUpperCase()}
@@ -286,7 +291,7 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
       </div>
 
       {!hintGone && (
-        <p className="fixed bottom-6 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap font-mono text-[10px] tracking-[0.24em] text-parchment-dim">
+        <p className="fixed bottom-6 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap font-mono text-[10px] tracking-[0.24em] text-muted">
           DRAG TO PAN · SCROLL TO ZOOM · SELECT A MEDALLION
         </p>
       )}
@@ -307,7 +312,7 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
                 left: yearX(y, plan.minYear),
                 top: AXIS_H - 20,
                 bottom: 140,
-                borderLeft: "1px dashed rgba(237,232,222,0.09)",
+                borderLeft: "1px dashed rgba(244,244,245,0.09)",
               }}
             />
           ))}
@@ -317,7 +322,7 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
             className="absolute"
             style={{ left: MARGIN_X * 0.5, right: MARGIN_X * 0.5, top: AXIS_H - 56 }}
           >
-            <div className="fp-axis-line h-px w-full bg-gradient-to-r from-transparent via-[rgba(201,162,39,0.75)] to-transparent" />
+            <div className="fp-axis-line h-px w-full bg-gradient-to-r from-transparent via-[rgba(79,127,255,0.75)] to-transparent" />
           </div>
           {plan.years.map((y) => (
             <div
@@ -325,12 +330,9 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
               className="absolute -translate-x-1/2 text-center"
               style={{ left: yearX(y, plan.minYear), top: AXIS_H - 48 }}
             >
-              <div className="mx-auto h-3 w-px bg-[rgba(201,162,39,0.6)]" />
-              <p className="mt-2 font-mono text-[15px] tracking-[0.28em] text-parchment">
+              <div className="mx-auto h-3 w-px bg-[rgba(79,127,255,0.6)]" />
+              <p className="mt-2 font-mono text-[15px] tracking-[0.28em] text-fg">
                 {y}
-              </p>
-              <p className="mt-0.5 font-serif text-[10px] italic tracking-[0.18em] text-brass-dim">
-                {toRoman(y)}
               </p>
             </div>
           ))}
@@ -392,10 +394,10 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
                   >
                     {c.wing.toUpperCase()}
                   </p>
-                  <h2 className="font-serif text-[26px] leading-none text-parchment">
+                  <h2 className="font-display text-[26px] leading-none text-fg">
                     {c.name}
                   </h2>
-                  <p className="font-mono text-[10px] tracking-[0.2em] text-parchment-dim">
+                  <p className="font-mono text-[10px] tracking-[0.2em] text-muted">
                     {counts[c.slug] ?? 0} WORKS
                   </p>
                 </div>
@@ -438,20 +440,20 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
 
           {/* Cartouche */}
           <div
-            className="absolute border border-[rgba(237,232,222,0.25)] p-5"
+            className="absolute border border-[rgba(244,244,245,0.25)] p-5"
             style={{ left: MARGIN_X * 0.5, bottom: 40, width: 340 }}
           >
-            <p className="font-serif text-[17px] text-parchment">
+            <p className="font-display text-[17px] text-fg">
               {data.museum.name}
             </p>
-            <p className="mt-1 font-mono text-[9px] tracking-[0.26em] text-parchment-dim">
+            <p className="mt-1 font-mono text-[9px] tracking-[0.26em] text-muted">
               PLAN OF THE COLLECTION · HUNG BY YEAR
             </p>
             <div className="mt-3 flex items-center gap-3">
-              <div className="h-1.5 w-24 border border-[rgba(237,232,222,0.4)]">
-                <div className="h-full w-1/2 bg-[rgba(237,232,222,0.4)]" />
+              <div className="h-1.5 w-24 border border-[rgba(244,244,245,0.4)]">
+                <div className="h-full w-1/2 bg-[rgba(244,244,245,0.4)]" />
               </div>
-              <p className="font-mono text-[9px] tracking-[0.2em] text-parchment-dim">
+              <p className="font-mono text-[9px] tracking-[0.2em] text-muted">
                 ONE YEAR
               </p>
             </div>

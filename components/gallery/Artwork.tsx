@@ -30,13 +30,13 @@ function PlacardMesh({ piece }: { piece: Piece }) {
       ctx.strokeStyle = "rgba(120,110,90,0.5)";
       ctx.lineWidth = 3;
       ctx.strokeRect(8, 8, 624, 240);
-      ctx.fillStyle = "#8a7120";
+      ctx.fillStyle = "#3757b8";
       ctx.font = "500 30px 'IBM Plex Mono', monospace";
       ctx.fillText(`CAT. ${piece.catalogNo}`, 40, 74);
-      ctx.fillStyle = "#211e18";
-      ctx.font = "600 44px Fraunces, Georgia, serif";
+      ctx.fillStyle = "#1a1a1e";
+      ctx.font = "600 44px 'Space Grotesk', sans-serif";
       ctx.fillText(piece.title, 40, 140, 560);
-      ctx.fillStyle = "rgba(33,30,24,0.65)";
+      ctx.fillStyle = "rgba(26,26,30,0.65)";
       ctx.font = "400 32px 'IBM Plex Mono', monospace";
       ctx.fillText(`${piece.yearIsPlaceholder ? "c. " : ""}${piece.year}`, 40, 200);
       if (texRef.current) texRef.current.needsUpdate = true;
@@ -110,7 +110,7 @@ export default function Artwork({ hang }: { hang: Hang }) {
 
   return (
     <group position={position} rotation-y={rotationY}>
-      {/* Frame bars (brass) */}
+      {/* Frame bars (accent) */}
       {[
         { p: [0, matH / 2 + FRAME_T / 2, 0] as const, s: [matW + FRAME_T * 2, FRAME_T, FRAME_D] as const },
         { p: [0, -matH / 2 - FRAME_T / 2, 0] as const, s: [matW + FRAME_T * 2, FRAME_T, FRAME_D] as const },
@@ -120,10 +120,10 @@ export default function Artwork({ hang }: { hang: Hang }) {
         <mesh key={i} position={[...bar.p]} castShadow>
           <boxGeometry args={[...bar.s]} />
           <meshStandardMaterial
-            color="#8a6f1e"
-            roughness={0.32}
-            metalness={0.92}
-            envMapIntensity={1.2}
+            color="#141416"
+            roughness={0.42}
+            metalness={0.75}
+            envMapIntensity={1.1}
           />
         </mesh>
       ))}

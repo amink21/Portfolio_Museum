@@ -1,17 +1,15 @@
 import type { Metadata } from "next";
-import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
-  axes: ["opsz"],
 });
 
-const plexSans = IBM_Plex_Sans({
-  variable: "--font-plex-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -21,9 +19,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "The Kadawala Collection",
+  title: "Amin Kadawala — Developer & Designer",
   description:
-    "An interactive 3D design museum — the graphic work of Amin Kadawala, hung in walkable galleries.",
+    "Software developer and designer in Montreal. Coding projects, plus a walkable 3D museum of graphic design work.",
 };
 
 export default function RootLayout({
@@ -32,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable} grain antialiased`}
+        className={`${spaceGrotesk.variable} ${inter.variable} ${plexMono.variable} grain antialiased`}
       >
         {children}
       </body>

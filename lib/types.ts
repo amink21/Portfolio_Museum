@@ -27,8 +27,21 @@ export interface Piece {
   descriptionIsPlaceholder: boolean;
 }
 
+export interface CodeProject {
+  slug: string;
+  title: string;
+  description: string;
+  tech: string[];
+  github: string;
+  live: string;
+  image: string;
+  featured: boolean;
+  ordinal: number;
+}
+
 export interface MuseumData {
   museum: Museum;
   categories: Category[];
   pieces: Piece[];
+  codeProjects: CodeProject[];
 }

@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import type { Category, Piece } from "@/lib/types";
-import { toRoman } from "@/lib/floorplan";
 
 interface Props {
   piece: Piece;
@@ -101,38 +100,42 @@ export default function InspectOverlay({ piece, category, onClose }: Props) {
           }}
           draggable={false}
         />
-        <p className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[9px] tracking-[0.24em] text-parchment-dim">
+        <p className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[9px] tracking-[0.24em] text-muted">
           SCROLL TO MAGNIFY · DOUBLE-CLICK TO RESET
         </p>
       </div>
 
       {/* Catalog panel */}
-      <aside className="insp-panel w-full shrink-0 overflow-y-auto border-t border-[rgba(201,162,39,0.3)] bg-[#0e0f12] p-7 md:w-[380px] md:border-l md:border-t-0 md:p-9">
+      <aside
+        className="insp-panel w-full shrink-0 overflow-y-auto border-t border-[rgba(244,244,245,0.12)] bg-[#0e0e12] p-7 md:w-[380px] md:border-l md:border-t-0 md:p-9"
+        style={{ boxShadow: `inset 0 3px 0 ${category.color}` }}
+      >
         <p className="font-mono text-[10px] tracking-[0.32em]" style={{ color: category.color }}>
           {category.wing.toUpperCase()} — {category.name.toUpperCase()}
         </p>
-        <h2 className="engraved mt-3 font-serif text-3xl leading-tight">
+        <h2 className="mt-3 font-display text-3xl font-semibold leading-tight text-fg">
           {piece.title}
         </h2>
-        <p className="mt-3 font-mono text-xs tracking-[0.22em] text-parchment-dim">
-          {piece.yearIsPlaceholder ? "c. " : ""}
-          {piece.year} · {toRoman(piece.year)}
-        </p>
-        <p className="mt-1 font-mono text-xs tracking-[0.22em] text-brass-dim">
-          CAT. {piece.catalogNo}
-        </p>
-        <div className="mt-5 h-px w-20 bg-gradient-to-r from-[rgba(201,162,39,0.7)] to-transparent" />
-        <p className="mt-5 text-[13.5px] leading-relaxed text-parchment-dim">
+        <div className="mt-4 flex flex-wrap gap-2">
+          <span className="rounded-md border border-[rgba(244,244,245,0.14)] px-2.5 py-1 font-mono text-[11px] tracking-[0.14em] text-muted">
+            {piece.yearIsPlaceholder ? "c. " : ""}
+            {piece.year}
+          </span>
+          <span className="rounded-md border border-[rgba(244,244,245,0.14)] px-2.5 py-1 font-mono text-[11px] tracking-[0.14em] text-muted">
+            CAT. {piece.catalogNo}
+          </span>
+        </div>
+        <p className="mt-5 text-[13.5px] leading-relaxed text-muted">
           {piece.description}
         </p>
         {(piece.yearIsPlaceholder || piece.descriptionIsPlaceholder) && (
-          <p className="mt-4 inline-block border border-[rgba(201,162,39,0.35)] px-2 py-1 font-mono text-[9px] tracking-[0.2em] text-brass-dim">
+          <p className="mt-4 inline-block border border-[rgba(79,127,255,0.35)] px-2 py-1 font-mono text-[9px] tracking-[0.2em] text-accent-dim">
             DRAFT RECORD — DETAILS PENDING
           </p>
         )}
         <button
           onClick={onClose}
-          className="mt-8 inline-flex items-center gap-2 border border-[rgba(201,162,39,0.5)] px-4 py-2.5 font-mono text-[11px] tracking-[0.2em] text-brass transition-colors hover:bg-brass hover:text-ink"
+          className="mt-8 inline-flex items-center gap-2 rounded-lg border border-[rgba(79,127,255,0.5)] px-4 py-2.5 font-mono text-[11px] tracking-[0.2em] text-accent transition-colors hover:bg-accent hover:text-base"
         >
           ← RETURN TO THE WING
         </button>

@@ -10,8 +10,8 @@ import InspectOverlay from "./InspectOverlay";
 const GalleryScene = dynamic(() => import("./GalleryScene"), {
   ssr: false,
   loading: () => (
-    <div className="fixed inset-0 flex items-center justify-center bg-ink">
-      <p className="font-mono text-[11px] tracking-[0.3em] text-brass">
+    <div className="fixed inset-0 flex items-center justify-center bg-base">
+      <p className="font-mono text-[11px] tracking-[0.3em] text-accent">
         PREPARING THE WING…
       </p>
     </div>
@@ -53,7 +53,7 @@ export default function GalleryClient({ category, pieces, museum }: Props) {
   }, []);
 
   return (
-    <main className="fixed inset-0 bg-ink">
+    <main className="fixed inset-0 bg-base">
       <GalleryScene
         category={category}
         pieces={pieces}
@@ -70,10 +70,10 @@ export default function GalleryClient({ category, pieces, museum }: Props) {
         <p className="entry-line font-mono text-[11px] tracking-[0.4em]" style={{ color: category.color }}>
           {category.wing.toUpperCase()}
         </p>
-        <h1 className="entry-line mt-4 font-serif text-5xl text-parchment md:text-6xl">
+        <h1 className="entry-line mt-4 font-display text-5xl text-fg md:text-6xl">
           {category.name}
         </h1>
-        <p className="entry-line mt-4 font-mono text-[10px] tracking-[0.3em] text-parchment-dim">
+        <p className="entry-line mt-4 font-mono text-[10px] tracking-[0.3em] text-muted">
           {pieces.length} WORKS · {museum.name.toUpperCase()}
         </p>
       </div>
@@ -82,31 +82,31 @@ export default function GalleryClient({ category, pieces, museum }: Props) {
       <header className="pointer-events-none fixed left-0 right-0 top-0 z-10 flex items-start justify-between p-6">
         <div className="bg-[rgba(11,12,14,0.72)] px-4 py-3 backdrop-blur-sm">
           <Link
-            href="/"
-            className="pointer-events-auto font-mono text-[10px] tracking-[0.26em] text-parchment-dim transition-colors hover:text-brass"
+            href="/museum"
+            className="pointer-events-auto font-mono text-[10px] tracking-[0.26em] text-muted transition-colors hover:text-accent"
           >
-            ← FLOOR PLAN
+            ← MUSEUM
           </Link>
-          <h2 className="mt-2 font-serif text-lg text-parchment">
+          <h2 className="mt-2 font-display text-lg text-fg">
             {category.name}
           </h2>
           <p className="font-mono text-[9px] tracking-[0.3em]" style={{ color: category.color }}>
             {category.wing.toUpperCase()}
           </p>
         </div>
-        <p className="hidden bg-[rgba(11,12,14,0.72)] px-3 py-2 font-mono text-[10px] tracking-[0.2em] text-parchment-dim backdrop-blur-sm md:block">
+        <p className="hidden bg-[rgba(11,12,14,0.72)] px-3 py-2 font-mono text-[10px] tracking-[0.2em] text-muted backdrop-blur-sm md:block">
           {pieces.length} WORKS ON VIEW
         </p>
       </header>
 
       {/* Crosshair while walking */}
       {locked && !inspecting && (
-        <div className="pointer-events-none fixed left-1/2 top-1/2 z-10 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgba(237,232,222,0.75)] shadow-[0_0_6px_rgba(0,0,0,0.8)]" />
+        <div className="pointer-events-none fixed left-1/2 top-1/2 z-10 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[rgba(244,244,245,0.75)] shadow-[0_0_6px_rgba(0,0,0,0.8)]" />
       )}
 
       {/* Control hints */}
       {entered && !inspecting && (
-        <p className="pointer-events-none fixed bottom-6 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap bg-[rgba(11,12,14,0.72)] px-4 py-2 font-mono text-[10px] tracking-[0.22em] text-parchment-dim backdrop-blur-sm">
+        <p className="pointer-events-none fixed bottom-6 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap bg-[rgba(11,12,14,0.72)] px-4 py-2 font-mono text-[10px] tracking-[0.22em] text-muted backdrop-blur-sm">
           {locked
             ? "W A S D — WALK · LOOK WITH MOUSE · CLICK A WORK TO INSPECT · ESC — RELEASE"
             : "CLICK A WORK TO INSPECT · CLICK THE FLOOR TO WALK (W A S D + MOUSE)"}

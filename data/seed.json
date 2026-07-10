@@ -6,13 +6,154 @@
     "about": "Designer & developer based in Montreal. Concordia University Computer Science graduate; builds enterprise software for the Department of National Defence by day and crafted the graphic work in this collection independently.",
     "contact": "aminkadawala@gmail.com"
   },
+  "codeProjects": [
+    {
+      "slug": "mtlhalalfood",
+      "title": "MTLHalalFood",
+      "description": "Progressive web app helping users discover halal restaurants in Montreal with filtering and offline capability.",
+      "tech": [
+        "Next.js",
+        "Supabase",
+        "Tailwind CSS",
+        "PWA",
+        "Mapbox"
+      ],
+      "github": "https://github.com/amink21/MTLHalalFood",
+      "live": "https://mtlhalalfood.com/",
+      "image": "/projects/project5.jpeg",
+      "featured": true,
+      "ordinal": 1
+    },
+    {
+      "slug": "ezsales",
+      "title": "EZSales",
+      "description": "Website for a wholesale business managing inventory, orders, and client records.",
+      "tech": [
+        "React",
+        "Node.js",
+        "TypeScript",
+        "PostgreSQL"
+      ],
+      "github": "",
+      "live": "",
+      "image": "/projects/project6.jpg",
+      "featured": true,
+      "ordinal": 2
+    },
+    {
+      "slug": "folion",
+      "title": "Folion",
+      "description": "Client and project management for freelancers with bookings, projects, and invoicing.",
+      "tech": [
+        "React Native",
+        "Firebase",
+        "Stripe"
+      ],
+      "github": "",
+      "live": "",
+      "image": "/projects/project5.jpeg",
+      "featured": true,
+      "ordinal": 3
+    },
+    {
+      "slug": "minecraft-cpp",
+      "title": "Minecraft C++",
+      "description": "3D voxel-style game with terrain generation, block placement, and lighting.",
+      "tech": [
+        "C++",
+        "OpenGL",
+        "GLM"
+      ],
+      "github": "https://github.com/stunt296/comp371",
+      "live": "",
+      "image": "/projects/project1.jpg",
+      "featured": false,
+      "ordinal": 4
+    },
+    {
+      "slug": "personal-portfolio",
+      "title": "Personal Portfolio",
+      "description": "Earlier portfolio site with a responsive layout.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Vercel"
+      ],
+      "github": "https://github.com/amink21/Portfolio",
+      "live": "https://portfolio-amink21.vercel.app/",
+      "image": "/projects/project2.jpg",
+      "featured": false,
+      "ordinal": 5
+    },
+    {
+      "slug": "proteinpros",
+      "title": "ProteinPros",
+      "description": "Protein and supplements store with catalog, cart, and checkout.",
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "PHP"
+      ],
+      "github": "https://github.com/amink21/Protein_eCommerce_Website",
+      "live": "",
+      "image": "/projects/project6.jpg",
+      "featured": false,
+      "ordinal": 6
+    },
+    {
+      "slug": "tictactoe-java",
+      "title": "TicTacToe Java",
+      "description": "Classic Tic-Tac-Toe with a GUI and win detection.",
+      "tech": [
+        "Java",
+        "Swing"
+      ],
+      "github": "https://github.com/amink21/Tic-Tac-Toe",
+      "live": "",
+      "image": "/projects/project3.jpg",
+      "featured": false,
+      "ordinal": 7
+    },
+    {
+      "slug": "recipe-generator",
+      "title": "Recipe Generator",
+      "description": "Search and discover recipes by ingredients with filtering.",
+      "tech": [
+        "React",
+        "REST API",
+        "Vercel"
+      ],
+      "github": "https://github.com/amink21/Recipe_Generator",
+      "live": "https://recipe-generator-lake.vercel.app/",
+      "image": "/projects/project4.jpg",
+      "featured": false,
+      "ordinal": 8
+    },
+    {
+      "slug": "calorie-counter",
+      "title": "Calorie Counter",
+      "description": "Track daily calories and macros with progress tracking.",
+      "tech": [
+        "JavaScript",
+        "Local Storage",
+        "CSS"
+      ],
+      "github": "https://github.com/amink21/Calorie_Counter",
+      "live": "",
+      "image": "/projects/project7.jpg",
+      "featured": false,
+      "ordinal": 9
+    }
+  ],
   "categories": [
     {
       "slug": "logos-branding",
       "name": "Logos & Branding",
       "wing": "Wing I",
-      "color": "#BC8F8F",
-      "colorName": "Dusty Rose",
+      "color": "#FF6E91",
+      "colorName": "Pink",
       "ordinal": 1,
       "blurb": "[PLACEHOLDER] A line about your identity & logotype work."
     },
@@ -20,8 +161,8 @@
       "slug": "cover-art",
       "name": "Cover Art",
       "wing": "Wing II",
-      "color": "#7D8FA8",
-      "colorName": "Slate Blue",
+      "color": "#38BDF8",
+      "colorName": "Cyan",
       "ordinal": 2,
       "blurb": "[PLACEHOLDER] A line about your album & book cover work."
     },
@@ -29,8 +170,8 @@
       "slug": "headers-banners",
       "name": "Headers & Banners",
       "wing": "Wing III",
-      "color": "#8FA48B",
-      "colorName": "Sage",
+      "color": "#4ADE80",
+      "colorName": "Green",
       "ordinal": 3,
       "blurb": "[PLACEHOLDER] A line about your channel art & banner work."
     },
@@ -38,7 +179,7 @@
       "slug": "print-stationery",
       "name": "Print & Stationery",
       "wing": "Wing IV",
-      "color": "#C98F4B",
+      "color": "#F59E0B",
       "colorName": "Amber",
       "ordinal": 4,
       "blurb": "[PLACEHOLDER] A line about your print & stationery work."
@@ -47,8 +188,8 @@
       "slug": "concept-illustration",
       "name": "Concept & Illustration",
       "wing": "Wing V",
-      "color": "#9A7AA0",
-      "colorName": "Plum",
+      "color": "#A78BFA",
+      "colorName": "Violet",
       "ordinal": 5,
       "blurb": "[PLACEHOLDER] A line about your concept art & illustration work."
     }
