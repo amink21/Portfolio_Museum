@@ -35,11 +35,20 @@ export default function GalleryClient({ museum, categories, pieces }: Props) {
   const [entered, setEntered] = useState(false);
   const [sceneReady, setSceneReady] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  // null = still deciding (avoids hydration mismatch); the museum needs a
+  // keyboard + mouse, so coarse pointers and small screens get a gate.
+  const [desktopOk, setDesktopOk] = useState<boolean | null>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const jumpRef = useRef<{ x: number; z: number } | null>(null);
 
+  useEffect(() => {
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    setDesktopOk(!coarse && window.innerWidth >= 900);
+  }, []);
+
   // Entry title card rises over black while the scene compiles…
   useEffect(() => {
+    if (desktopOk !== true) return;
     const tween = gsap.fromTo(
       ".entry-line",
       { autoAlpha: 0, y: 26 },
@@ -48,7 +57,7 @@ export default function GalleryClient({ museum, categories, pieces }: Props) {
     return () => {
       tween.kill();
     };
-  }, []);
+  }, [desktopOk]);
 
   // …and lifts away only once the scene has actually rendered frames
   useEffect(() => {
@@ -83,6 +92,46 @@ export default function GalleryClient({ museum, categories, pieces }: Props) {
   const inspectingCategory = inspecting
     ? categories.find((c) => c.slug === inspecting.category)
     : null;
+
+  if (desktopOk === null) {
+    return <main className="fixed inset-0 bg-base" />;
+  }
+
+  if (!desktopOk) {
+    return (
+      <main className="fixed inset-0 overflow-hidden bg-base">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-25"
+          style={{ backgroundImage: "url(/museum-teaser.jpg)" }}
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,10,11,0.55),rgba(10,10,11,0.92))]" />
+        <div className="relative flex h-full flex-col items-center justify-center px-8 text-center">
+          <p className="font-display text-3xl font-semibold text-fg">
+            AK<span className="text-accent">.</span>
+          </p>
+          <p className="mt-8 font-mono text-[11px] tracking-[0.34em] text-accent">
+            DESKTOP EXPERIENCE
+          </p>
+          <h1 className="mt-4 max-w-sm font-display text-3xl font-semibold leading-tight text-fg">
+            The museum needs a bigger door.
+          </h1>
+          <p className="mt-4 max-w-xs text-[13.5px] leading-relaxed text-muted">
+            Walking the collection is first-person — keyboard and mouse. Come
+            back on a computer to step inside.
+          </p>
+          <Link
+            href="/"
+            className="mt-9 rounded-lg bg-accent px-5 py-3 font-mono text-[11px] tracking-[0.2em] text-base"
+          >
+            ← BACK TO THE PORTFOLIO
+          </Link>
+          <p className="mt-6 font-mono text-[9px] tracking-[0.2em] text-muted">
+            {pieces.length} WORKS · {layout.sections.length} SECTIONS AWAIT
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="fixed inset-0 bg-base">
@@ -167,23 +216,6 @@ export default function GalleryClient({ museum, categories, pieces }: Props) {
           SELECT TO GLIDE THERE
         </p>
       </nav>
-
-      {/* Section chips (mobile) */}
-      <div className="fixed bottom-16 left-0 right-0 z-10 flex gap-2 overflow-x-auto px-4 pb-1 md:hidden">
-        {layout.sections.map((s) => (
-          <button
-            key={s.category.slug}
-            onClick={() => jumpTo(s.category.slug)}
-            className={`shrink-0 rounded-md border px-3 py-1.5 font-mono text-[10px] tracking-[0.14em] backdrop-blur-md ${
-              activeSection === s.category.slug
-                ? "border-accent bg-[rgba(79,127,255,0.15)] text-accent"
-                : "border-[rgba(244,244,245,0.2)] bg-[rgba(10,10,11,0.7)] text-muted"
-            }`}
-          >
-            {s.category.name.toUpperCase()}
-          </button>
-        ))}
-      </div>
 
       {/* Crosshair while walking */}
       {locked && !inspecting && (

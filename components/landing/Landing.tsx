@@ -11,12 +11,26 @@ gsap.registerPlugin(ScrollTrigger);
 const chip =
   "rounded-md border border-[rgba(244,244,245,0.14)] px-2 py-0.5 font-mono text-[10px] tracking-[0.08em] text-muted";
 
+/** Salon-wall positions for the artwork hiding in the hero's dark. */
+// Kept clear of the headline/paragraph block (roughly left 12–62%, top 18–62%)
+const COLLAGE: Array<{ left: string; top: string; w: number; r: number }> = [
+  { left: "4%", top: "12%", w: 180, r: -6 },
+  { left: "2%", top: "70%", w: 160, r: 3 },
+  { left: "20%", top: "80%", w: 150, r: 6 },
+  { left: "36%", top: "78%", w: 155, r: -3 },
+  { left: "52%", top: "70%", w: 190, r: 5 },
+  { left: "58%", top: "8%", w: 170, r: -5 },
+  { left: "74%", top: "34%", w: 205, r: 3 },
+  { left: "88%", top: "66%", w: 150, r: -4 },
+  { left: "92%", top: "10%", w: 145, r: 5 },
+  { left: "70%", top: "80%", w: 175, r: -2 },
+  { left: "44%", top: "8%", w: 150, r: -3 },
+];
+
 function ProjectLinks({ p, big }: { p: CodeProject; big?: boolean }) {
   const cls = `font-mono ${big ? "text-[12px]" : "text-[11px]"} tracking-[0.16em]`;
   if (!p.github && !p.live && !p.appstore)
-    return (
-      <span className={`${cls} text-accent`}>COMING SOON</span>
-    );
+    return <span className={`${cls} text-accent`}>COMING SOON</span>;
   return (
     <div className={`flex gap-5 ${cls}`}>
       {p.live && (
@@ -43,15 +57,67 @@ export default function Landing({ data }: { data: MuseumData }) {
   const featured = codeProjects.filter((p) => p.featured);
   const others = codeProjects.filter((p) => !p.featured);
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
+  const [booted, setBooted] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
+  const loaderRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const collageRef = useRef<HTMLDivElement>(null);
 
+  // ---- Preloader: AK. + counter, then the curtain lifts ----
   useEffect(() => {
+    const seen = sessionStorage.getItem("ak-visited");
+    const loader = loaderRef.current!;
+    const pct = loader.querySelector(".loader-pct")!;
+    const tl = gsap.timeline({
+      onComplete: () => {
+        sessionStorage.setItem("ak-visited", "1");
+        setBooted(true);
+      },
+    });
+    if (seen) {
+      tl.to(loader, { autoAlpha: 0, duration: 0.35, ease: "power2.out" });
+    } else {
+      const counter = { v: 0 };
+      tl.fromTo(
+        ".loader-mark",
+        { autoAlpha: 0, y: 18 },
+        { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" }
+      )
+        .fromTo(
+          ".loader-dot",
+          { scale: 0 },
+          { scale: 1, duration: 0.4, stagger: 0.06, ease: "back.out(2)" },
+          "<0.15"
+        )
+        .to(
+          counter,
+          {
+            v: 100,
+            duration: 1.1,
+            ease: "power2.inOut",
+            onUpdate: () => {
+              pct.textContent = String(Math.round(counter.v)).padStart(3, "0");
+            },
+          },
+          "<"
+        )
+        .to(".loader-bar", { width: "100%", duration: 1.1, ease: "power2.inOut" }, "<")
+        .to(loader, { yPercent: -100, duration: 0.75, ease: "power3.inOut", delay: 0.12 });
+    }
+    return () => {
+      tl.kill();
+    };
+  }, []);
+
+  // ---- Hero entrance, scroll reveals, tilt cards, cursor preview ----
+  useEffect(() => {
+    if (!booted) return;
     const cleanups: Array<() => void> = [];
     const ctx = gsap.context(() => {
       gsap.fromTo(
         ".hero-line",
         { autoAlpha: 0, y: 30 },
-        { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.12, ease: "power3.out", delay: 0.15 }
+        { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.12, ease: "power3.out", delay: 0.1 }
       );
       gsap.utils.toArray<HTMLElement>(".reveal").forEach((el) => {
         gsap.fromTo(
@@ -66,31 +132,21 @@ export default function Landing({ data }: { data: MuseumData }) {
           }
         );
       });
-
-      // Feature images drift slower than the page (parallax)
       gsap.utils.toArray<HTMLElement>(".parallax-img").forEach((el) => {
         gsap.fromTo(
           el,
           { yPercent: -7 },
-          {
-            yPercent: 7,
-            ease: "none",
-            scrollTrigger: { trigger: el, scrub: 0.6 },
-          }
+          { yPercent: 7, ease: "none", scrollTrigger: { trigger: el, scrub: 0.6 } }
         );
       });
-
-      // Mouse tilt on feature cards
       gsap.utils.toArray<HTMLElement>(".tilt-card").forEach((card) => {
         gsap.set(card, { transformPerspective: 900 });
         const rx = gsap.quickTo(card, "rotationX", { duration: 0.5, ease: "power3" });
         const ry = gsap.quickTo(card, "rotationY", { duration: 0.5, ease: "power3" });
         const move = (e: MouseEvent) => {
           const r = card.getBoundingClientRect();
-          const px = (e.clientX - r.left) / r.width - 0.5;
-          const py = (e.clientY - r.top) / r.height - 0.5;
-          ry(px * 10);
-          rx(-py * 8);
+          ry(((e.clientX - r.left) / r.width - 0.5) * 10);
+          rx(-((e.clientY - r.top) / r.height - 0.5) * 8);
         };
         const leave = () => {
           rx(0);
@@ -103,8 +159,6 @@ export default function Landing({ data }: { data: MuseumData }) {
           card.removeEventListener("mouseleave", leave);
         });
       });
-
-      // Cursor-following preview for the list rows
       const preview = previewRef.current;
       if (preview) {
         const xTo = gsap.quickTo(preview, "x", { duration: 0.4, ease: "power3" });
@@ -121,6 +175,44 @@ export default function Landing({ data }: { data: MuseumData }) {
       ctx.revert();
       cleanups.forEach((fn) => fn());
     };
+  }, [booted]);
+
+  // ---- Curator's flashlight: cursor reveals the collection in the dark ----
+  useEffect(() => {
+    const hero = heroRef.current;
+    const collage = collageRef.current;
+    if (!hero || !collage) return;
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    if (coarse) {
+      // no cursor on touch: drift the light on its own
+      const spot = { x: 25, y: 30 };
+      const tween = gsap.to(spot, {
+        x: 75,
+        y: 65,
+        duration: 7,
+        yoyo: true,
+        repeat: -1,
+        ease: "sine.inOut",
+        onUpdate: () => {
+          collage.style.setProperty("--mx", `${spot.x}%`);
+          collage.style.setProperty("--my", `${spot.y}%`);
+        },
+      });
+      return () => {
+        tween.kill();
+      };
+    }
+    const driftX = gsap.quickTo(collage, "x", { duration: 1.1, ease: "power3" });
+    const driftY = gsap.quickTo(collage, "y", { duration: 1.1, ease: "power3" });
+    const move = (e: MouseEvent) => {
+      const r = hero.getBoundingClientRect();
+      collage.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      collage.style.setProperty("--my", `${e.clientY - r.top}px`);
+      driftX(((e.clientX - r.left) / r.width - 0.5) * -18);
+      driftY(((e.clientY - r.top) / r.height - 0.5) * -12);
+    };
+    hero.addEventListener("mousemove", move);
+    return () => hero.removeEventListener("mousemove", move);
   }, []);
 
   const showPreview = (src: string) => {
@@ -133,6 +225,31 @@ export default function Landing({ data }: { data: MuseumData }) {
 
   return (
     <main className="relative">
+      {/* Preloader */}
+      <div
+        ref={loaderRef}
+        className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-base"
+      >
+        <p className="loader-mark font-display text-5xl font-semibold text-fg">
+          AK<span className="text-accent">.</span>
+        </p>
+        <div className="mt-7 flex gap-2.5">
+          {categories.map((c) => (
+            <span
+              key={c.slug}
+              className="loader-dot h-2 w-2 rounded-full"
+              style={{ background: c.color }}
+            />
+          ))}
+        </div>
+        <div className="mt-7 h-px w-56 overflow-hidden bg-[rgba(244,244,245,0.15)]">
+          <div className="loader-bar h-full w-0 bg-accent" />
+        </div>
+        <p className="loader-pct mt-3 font-mono text-[11px] tracking-[0.3em] text-muted">
+          000
+        </p>
+      </div>
+
       {/* Cursor-following project preview */}
       <div
         ref={previewRef}
@@ -174,13 +291,17 @@ export default function Landing({ data }: { data: MuseumData }) {
       </nav>
 
       {/* Hero */}
-      <section id="top" className="relative overflow-hidden px-6 pb-20 pt-40 md:pt-48">
+      <section
+        id="top"
+        ref={heroRef}
+        className="relative overflow-hidden px-6 pb-24 pt-40 md:pt-48"
+      >
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(56% 44% at 68% 8%, rgba(79,127,255,0.14), transparent 70%)",
+              "radial-gradient(56% 44% at 68% 8%, rgba(79,127,255,0.12), transparent 70%)",
           }}
         />
         <div
@@ -192,13 +313,56 @@ export default function Landing({ data }: { data: MuseumData }) {
             backgroundSize: "72px 72px",
           }}
         />
-        <div className="relative mx-auto max-w-6xl">
+
+        {/* The collection, hiding in the dark until the light finds it */}
+        <div
+          ref={collageRef}
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            WebkitMaskImage:
+              "radial-gradient(circle 330px at var(--mx, 72%) var(--my, 35%), black 42%, transparent 80%)",
+            maskImage:
+              "radial-gradient(circle 330px at var(--mx, 72%) var(--my, 35%), black 42%, transparent 80%)",
+          }}
+        >
+          {COLLAGE.map((c, i) => {
+            const piece = pieces[i % pieces.length];
+            return (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={i}
+                src={piece.image}
+                alt=""
+                loading="lazy"
+                className="absolute rounded-sm border-[5px] border-[#efece4] shadow-[0_18px_50px_rgba(0,0,0,0.65)]"
+                style={{
+                  left: c.left,
+                  top: c.top,
+                  width: c.w,
+                  transform: `rotate(${c.r}deg)`,
+                }}
+              />
+            );
+          })}
+        </div>
+
+        <div className="pointer-events-none relative mx-auto max-w-6xl">
           <p className="hero-line font-mono text-[11px] tracking-[0.3em] text-accent">
             MONTREAL · SOFTWARE DEVELOPER & DESIGNER
           </p>
-          <h1 className="hero-line mt-5 max-w-3xl font-display text-5xl font-semibold leading-[1.02] tracking-tight text-fg md:text-7xl">
-            Amin Kadawala builds software — and hangs his design work in a
-            walkable museum.
+          <h1 className="hero-line mt-5 max-w-3xl font-display text-5xl font-semibold leading-[1.04] tracking-tight text-fg md:text-7xl">
+            Code that ships.
+            <span className="block">
+              Design that hangs{" "}
+              <Link
+                href="/museum"
+                className="pointer-events-auto text-accent underline decoration-[rgba(79,127,255,0.4)] decoration-2 underline-offset-8 transition-colors hover:text-fg"
+              >
+                in a museum
+              </Link>
+              .
+            </span>
           </h1>
           <p className="hero-line mt-6 max-w-xl text-[15px] leading-relaxed text-muted">
             {museum.about}
@@ -206,13 +370,13 @@ export default function Landing({ data }: { data: MuseumData }) {
           <div className="hero-line mt-9 flex flex-wrap items-center gap-4">
             <a
               href="#projects"
-              className="rounded-lg bg-accent px-5 py-3 font-mono text-[11px] tracking-[0.2em] text-base transition-opacity hover:opacity-85"
+              className="pointer-events-auto rounded-lg bg-accent px-5 py-3 font-mono text-[11px] tracking-[0.2em] text-base transition-opacity hover:opacity-85"
             >
               VIEW PROJECTS ↓
             </a>
             <Link
               href="/museum"
-              className="group rounded-lg border border-[rgba(79,127,255,0.5)] px-5 py-3 font-mono text-[11px] tracking-[0.2em] text-accent transition-colors hover:bg-accent hover:text-base"
+              className="group pointer-events-auto rounded-lg border border-[rgba(79,127,255,0.5)] px-5 py-3 font-mono text-[11px] tracking-[0.2em] text-accent transition-colors hover:bg-accent hover:text-base"
             >
               ENTER THE DESIGN MUSEUM{" "}
               <span className="inline-block transition-transform group-hover:translate-x-1">
@@ -220,19 +384,26 @@ export default function Landing({ data }: { data: MuseumData }) {
               </span>
             </Link>
           </div>
+          <p className="hero-line mt-10 font-mono text-[10px] tracking-[0.24em] text-muted">
+            ◐ THE COLLECTION IS HIDING IN THE DARK — MOVE YOUR LIGHT
+          </p>
         </div>
       </section>
 
       {/* Engineering marquee */}
-      <div id="projects" className="marquee reveal border-y border-[rgba(244,244,245,0.08)] py-5">
-        <div className="marquee-track font-display text-5xl font-semibold tracking-tight md:text-6xl">
+      <div id="projects" className="marquee reveal border-y border-[rgba(244,244,245,0.08)] py-3">
+        <div className="marquee-track font-display text-xl font-semibold tracking-tight md:text-2xl">
           {[0, 1].map((i) => (
-            <span key={i} className="inline-flex items-baseline gap-14">
-              <span className="text-fg">ENGINEERING</span>
-              <span className="stroke-text">SELECTED WORK</span>
+            <span key={i} className="inline-flex items-baseline gap-10">
+              <span className="text-fg">FULL-STACK WEB</span>
               <span className="text-accent">✦</span>
-              <span className="stroke-text">ENGINEERING</span>
-              <span className="text-fg">SELECTED WORK</span>
+              <span className="stroke-text">iOS APPS</span>
+              <span className="text-accent">✦</span>
+              <span className="text-fg">DATA VISUALIZATION</span>
+              <span className="text-accent">✦</span>
+              <span className="stroke-text">
+                {codeProjects.length} PROJECTS SHIPPED
+              </span>
               <span className="text-accent">✦</span>
             </span>
           ))}
@@ -250,7 +421,6 @@ export default function Landing({ data }: { data: MuseumData }) {
                 i % 2 === 1 ? "md:[&>*:first-child]:order-2" : ""
               }`}
             >
-              {/* Image */}
               <a
                 href={p.live || p.appstore || p.github || "#"}
                 target="_blank"
@@ -271,8 +441,6 @@ export default function Landing({ data }: { data: MuseumData }) {
                   OPEN ↗
                 </span>
               </a>
-
-              {/* Copy */}
               <div className="relative">
                 <span
                   aria-hidden
@@ -377,6 +545,9 @@ export default function Landing({ data }: { data: MuseumData }) {
                 →
               </span>
             </Link>
+            <p className="mt-4 font-mono text-[9px] tracking-[0.2em] text-muted">
+              DESKTOP EXPERIENCE — KEYBOARD + MOUSE
+            </p>
           </div>
         </div>
       </section>

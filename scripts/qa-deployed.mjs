@@ -24,8 +24,12 @@ page.on("console", (m) => {
 
 // --- Landing ---
 await page.goto(BASE + "/", { waitUntil: "networkidle" });
-await page.waitForTimeout(2200);
+await page.waitForTimeout(4200); // preloader runs ~2.5s on first visit
 ok("landing loads", (await page.title()).includes("Amin Kadawala"));
+ok(
+  "hero museum link present",
+  await page.locator("h1 >> text=in a museum").isVisible()
+);
 const cards = await page.locator("[data-project]").count();
 ok("12 coding projects", cards === 12, `found ${cards}`);
 ok("marquee band present", (await page.locator(".marquee-track").count()) === 1);
@@ -88,13 +92,19 @@ ok(
   page.url()
 );
 
-// --- Mobile smoke ---
+// --- Mobile: museum is desktop-only, small screens get the gate ---
 await page.setViewportSize({ width: 390, height: 844 });
 await page.goto(BASE + "/museum", { waitUntil: "networkidle" });
-await page.waitForTimeout(10000);
-const chips = await page.locator(".bottom-16 button:visible").count();
-ok("mobile section chips visible", chips === 5, `visible chips ${chips}`);
-await page.screenshot({ path: `${OUT}/q4-mobile.png` });
+await page.waitForTimeout(2500);
+ok(
+  "mobile gets desktop-only gate",
+  await page.locator("text=DESKTOP EXPERIENCE").isVisible()
+);
+ok(
+  "gate has no 3D canvas",
+  (await page.locator("canvas").count()) === 0
+);
+await page.screenshot({ path: `${OUT}/q4-mobile-gate.png` });
 
 const benign = /favicon|third-party cookie|Slow network/i;
 const realErrors = errors.filter((e) => !benign.test(e));
