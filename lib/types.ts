@@ -34,6 +34,7 @@ export interface CodeProject {
   tech: string[];
   github: string;
   live: string;
+  appstore: string;
   image: string;
   featured: boolean;
   ordinal: number;

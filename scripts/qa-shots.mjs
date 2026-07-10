@@ -13,42 +13,34 @@ page.on("console", (m) => {
   if (m.type() === "error") errors.push(`console: ${m.text()}`);
 });
 
-// 1. Landing
+// 1. Landing hero
 await page.goto(BASE + "/", { waitUntil: "networkidle" });
 await page.waitForTimeout(2500);
 await page.screenshot({ path: `${OUT}/1-landing.png` });
 
-// 2. Landing — museum section
+// 2. Featured project row
+await page.evaluate(() =>
+  document.querySelector("[data-project]")?.scrollIntoView({ behavior: "instant", block: "center" })
+);
+await page.waitForTimeout(1500);
+await page.screenshot({ path: `${OUT}/2-featured.png` });
+
+// 3. Archive list + museum banner
 await page.evaluate(() =>
   document.querySelector("#museum")?.scrollIntoView({ behavior: "instant" })
 );
 await page.waitForTimeout(1500);
-await page.screenshot({ path: `${OUT}/2-landing-museum.png` });
+await page.screenshot({ path: `${OUT}/3-museum-banner.png` });
 
-// 3. Museum timeline
+// 4. The museum wing
 await page.goto(BASE + "/museum", { waitUntil: "networkidle" });
-await page.waitForTimeout(3500);
-await page.screenshot({ path: `${OUT}/3-timeline.png` });
+await page.waitForTimeout(13000);
+await page.screenshot({ path: `${OUT}/4-museum.png` });
 
-// 4. Plaque card
-await page.mouse.move(800, 500);
-for (let i = 0; i < 8; i++) {
-  await page.mouse.wheel(0, -240);
-  await page.waitForTimeout(70);
-}
-await page.waitForTimeout(1000);
-await page.evaluate(() => {
-  document
-    .querySelector(".fp-node button")
-    ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-});
-await page.waitForTimeout(1500);
-await page.screenshot({ path: `${OUT}/4-card.png` });
-
-// 5. Gallery
-await page.goto(BASE + "/gallery/cover-art", { waitUntil: "networkidle" });
-await page.waitForTimeout(7000);
-await page.screenshot({ path: `${OUT}/5-gallery.png` });
+// 5. After a section jump
+await page.locator("nav[aria-label=Sections] button").nth(2).click();
+await page.waitForTimeout(2600);
+await page.screenshot({ path: `${OUT}/5-section.png` });
 
 console.log("ERRORS:", errors.length ? errors.join("\n") : "none");
 await browser.close();

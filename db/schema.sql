@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS code_projects (
   tech TEXT[] NOT NULL DEFAULT '{}',
   github TEXT NOT NULL DEFAULT '',
   live TEXT NOT NULL DEFAULT '',
+  appstore TEXT NOT NULL DEFAULT '',
   image TEXT NOT NULL DEFAULT '',
   featured BOOLEAN NOT NULL DEFAULT FALSE,
   ordinal INT NOT NULL

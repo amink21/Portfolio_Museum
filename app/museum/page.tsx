@@ -1,5 +1,5 @@
 import { getMuseumData } from "@/lib/data";
-import FloorPlan from "@/components/timeline/FloorPlan";
+import GalleryClient from "@/components/gallery/GalleryClient";
 
 export const revalidate = 300;
 
@@ -9,5 +9,11 @@ export const metadata = {
 
 export default async function MuseumPage() {
   const data = await getMuseumData();
-  return <FloorPlan data={data} />;
+  return (
+    <GalleryClient
+      museum={data.museum}
+      categories={data.categories}
+      pieces={data.pieces}
+    />
+  );
 }

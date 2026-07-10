@@ -52,10 +52,10 @@ async function main() {
 
   for (const p of data.codeProjects) {
     await sql`
-      INSERT INTO code_projects (slug, title, description, tech, github, live, image, featured, ordinal)
-      VALUES (${p.slug}, ${p.title}, ${p.description}, ${p.tech}, ${p.github}, ${p.live}, ${p.image}, ${p.featured}, ${p.ordinal})
+      INSERT INTO code_projects (slug, title, description, tech, github, live, appstore, image, featured, ordinal)
+      VALUES (${p.slug}, ${p.title}, ${p.description}, ${p.tech}, ${p.github}, ${p.live}, ${p.appstore ?? ""}, ${p.image}, ${p.featured}, ${p.ordinal})
       ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title, description = EXCLUDED.description,
-        tech = EXCLUDED.tech, github = EXCLUDED.github, live = EXCLUDED.live,
+        tech = EXCLUDED.tech, github = EXCLUDED.github, live = EXCLUDED.live, appstore = EXCLUDED.appstore,
         image = EXCLUDED.image, featured = EXCLUDED.featured, ordinal = EXCLUDED.ordinal`;
   }
 

@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import { MeshReflectorMaterial } from "@react-three/drei";
 import * as THREE from "three";
-import type { Category } from "@/lib/types";
 import { ROOM_H, ROOM_W } from "@/lib/gallery";
 
 const WALL = "#e2dfd7"; // warm gallery white
@@ -11,11 +10,11 @@ const CEILING = "#8d8069"; // warm taupe band around the skylight
 
 /** Large wall lettering drawn to a canvas so no external font files are fetched. */
 function WallTitle({
-  category,
+  title,
   position,
   rotationY,
 }: {
-  category: Category;
+  title: string;
   position: [number, number, number];
   rotationY: number;
 }) {
@@ -34,12 +33,12 @@ function WallTitle({
       const ctx = canvas.getContext("2d")!;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.textAlign = "center";
-      ctx.fillStyle = category.color;
+      ctx.fillStyle = "#4f7fff";
       ctx.font = "500 46px 'IBM Plex Mono', monospace";
-      ctx.fillText(category.wing.toUpperCase().split("").join(" "), 1024, 170);
+      ctx.fillText("A M I N   K A D A W A L A", 1024, 170);
       ctx.fillStyle = "#1c1c20";
-      ctx.font = "600 160px 'Space Grotesk', sans-serif";
-      ctx.fillText(category.name, 1024, 400);
+      ctx.font = "600 150px 'Space Grotesk', sans-serif";
+      ctx.fillText(title, 1024, 400);
       ctx.strokeStyle = "rgba(30,30,36,0.5)";
       ctx.lineWidth = 3;
       ctx.beginPath();
@@ -48,7 +47,7 @@ function WallTitle({
       ctx.stroke();
       ctx.fillStyle = "rgba(40,37,30,0.6)";
       ctx.font = "400 40px 'IBM Plex Mono', monospace";
-      ctx.fillText("THE KADAWALA COLLECTION", 1024, 600);
+      ctx.fillText("GRAPHIC DESIGN — ONE WING, FIVE SECTIONS", 1024, 600);
       if (texRef.current) texRef.current.needsUpdate = true;
     };
     document.fonts.ready.then(draw);
@@ -56,7 +55,7 @@ function WallTitle({
     return () => {
       cancelled = true;
     };
-  }, [canvas, category]);
+  }, [canvas, title]);
 
   return (
     <mesh position={position} rotation-y={rotationY}>
@@ -86,10 +85,10 @@ function Bench({ z }: { z: number }) {
 }
 
 export default function Room({
-  category,
+  title,
   roomLength,
 }: {
-  category: Category;
+  title: string;
   roomLength: number;
 }) {
   const L = roomLength;
@@ -102,7 +101,7 @@ export default function Room({
 
   const fills = useMemo(() => {
     const zs: number[] = [];
-    for (let z = L / 2 - 4; z > -L / 2 + 2; z -= 7) zs.push(z);
+    for (let z = L / 2 - 4; z > -L / 2 + 2; z -= 11) zs.push(z);
     return zs;
   }, [L]);
 
@@ -178,17 +177,17 @@ export default function Room({
         <meshStandardMaterial color={WALL} roughness={0.96} />
       </mesh>
 
-      {/* End wall: white, wing name in ink, thin band in the wing colour */}
+      {/* End wall: white, collection name in ink, thin accent band */}
       <mesh position={[0, ROOM_H / 2, -L / 2]} receiveShadow userData={{ solid: true }}>
         <planeGeometry args={[ROOM_W, ROOM_H]} />
         <meshStandardMaterial color={WALL} roughness={0.96} />
       </mesh>
       <mesh position={[0, 0.85, -L / 2 + 0.015]}>
         <planeGeometry args={[ROOM_W, 0.06]} />
-        <meshStandardMaterial color={category.color} roughness={0.85} />
+        <meshStandardMaterial color="#4f7fff" roughness={0.85} />
       </mesh>
       <WallTitle
-        category={category}
+        title={title}
         position={[0, 2.6, -L / 2 + 0.02]}
         rotationY={0}
       />

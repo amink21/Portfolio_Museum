@@ -1,4 +1,4 @@
-import type { Piece } from "./types";
+import type { Category, Piece } from "./types";
 
 /** Room + hanging layout for a wing gallery (meters). */
 export const ROOM_W = 10;
@@ -15,31 +15,82 @@ export interface Hang {
   side: number;
 }
 
-export interface GalleryLayout {
+export interface Section {
+  category: Category;
+  index: number;
+  /** z of the section threshold portal */
+  portalZ: number;
+  /** z to teleport a visitor to when jumping to this section */
+  jumpZ: number;
+}
+
+export interface MuseumLayout {
   roomLength: number;
   hangs: Hang[];
+  sections: Section[];
   /** where the visitor starts, facing -z */
   start: [number, number, number];
 }
 
-export function computeGallery(pieces: Piece[]): GalleryLayout {
-  const perWall = Math.max(1, Math.ceil(pieces.length / 2));
-  const roomLength = perWall * SPACING + 9;
-  const startZ = roomLength / 2 - 6.5;
-  const hangs: Hang[] = pieces.map((piece, i) => {
-    const side = i % 2 === 0 ? -1 : 1;
-    const idx = Math.floor(i / 2);
-    const z = startZ - idx * SPACING - (side === 1 ? SPACING / 2 : 0);
-    return {
-      piece,
-      position: [side * (ROOM_W / 2 - 0.001), ART_CENTER_Y, z],
-      rotationY: side === -1 ? Math.PI / 2 : -Math.PI / 2,
-      side,
-    };
+const HEAD = 7; // entry vestibule before the first section
+const TAIL = 7; // room past the last piece to the end wall
+const SECTION_GAP = 5; // portal to first piece of a section
+
+/**
+ * One continuous wing for the whole collection: sections follow each other
+ * down a single hall, each announced by a threshold portal.
+ */
+export function computeMuseum(
+  categories: Category[],
+  pieces: Piece[]
+): MuseumLayout {
+  const ordered = [...categories].sort((a, b) => a.ordinal - b.ordinal);
+  const groups = ordered
+    .map((category) => ({
+      category,
+      pieces: pieces
+        .filter((p) => p.category === category.slug)
+        .sort(
+          (a, b) => a.year - b.year || a.catalogNo.localeCompare(b.catalogNo)
+        ),
+    }))
+    .filter((g) => g.pieces.length > 0);
+
+  const sectionLen = (n: number) =>
+    SECTION_GAP + Math.max(1, Math.ceil(n / 2)) * SPACING;
+  const roomLength =
+    HEAD + groups.reduce((acc, g) => acc + sectionLen(g.pieces.length), 0) + TAIL;
+
+  const hangs: Hang[] = [];
+  const sections: Section[] = [];
+  let cursor = roomLength / 2 - HEAD;
+
+  groups.forEach((group, gi) => {
+    sections.push({
+      category: group.category,
+      index: gi + 1,
+      portalZ: cursor,
+      jumpZ: cursor + 2.2,
+    });
+    group.pieces.forEach((piece, i) => {
+      const side = i % 2 === 0 ? -1 : 1;
+      const idx = Math.floor(i / 2);
+      const z =
+        cursor - SECTION_GAP - idx * SPACING - (side === 1 ? SPACING / 2 : 0);
+      hangs.push({
+        piece,
+        position: [side * (ROOM_W / 2 - 0.001), ART_CENTER_Y, z],
+        rotationY: side === -1 ? Math.PI / 2 : -Math.PI / 2,
+        side,
+      });
+    });
+    cursor -= sectionLen(group.pieces.length);
   });
+
   return {
     roomLength,
     hangs,
+    sections,
     start: [0, EYE_HEIGHT, roomLength / 2 - 1.6],
   };
 }

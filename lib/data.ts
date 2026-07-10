@@ -18,7 +18,7 @@ export async function getMuseumData(): Promise<MuseumData> {
       sql`SELECT name, tagline, about, contact FROM museum WHERE id = 1`,
       sql`SELECT slug, name, wing, color, color_name, ordinal, blurb FROM categories ORDER BY ordinal`,
       sql`SELECT slug, title, category_slug, year, year_is_placeholder, image, catalog_no, description, description_is_placeholder FROM pieces ORDER BY year, catalog_no`,
-      sql`SELECT slug, title, description, tech, github, live, image, featured, ordinal FROM code_projects ORDER BY ordinal`,
+      sql`SELECT slug, title, description, tech, github, live, appstore, image, featured, ordinal FROM code_projects ORDER BY ordinal`,
     ]);
     if (categoryRows.length === 0 || pieceRows.length === 0) return seedData;
     const museum: Museum = (museumRows[0] as Museum | undefined) ?? seedData.museum;
@@ -51,6 +51,7 @@ export async function getMuseumData(): Promise<MuseumData> {
             tech: r.tech,
             github: r.github,
             live: r.live,
+            appstore: r.appstore,
             image: r.image,
             featured: r.featured,
             ordinal: r.ordinal,

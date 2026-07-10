@@ -1,6 +1,7 @@
 /**
  * QA pass against a deployed build: BASE_URL=https://… node scripts/qa-deployed.mjs
- * Checks console/page errors, timeline interactions, all gallery wings, inspect view.
+ * Landing (hero, 12 projects, marquee), single-wing museum (sections, inspect),
+ * /gallery/* redirects, mobile chips, console errors.
  */
 import { chromium } from "playwright";
 
@@ -25,91 +26,77 @@ page.on("console", (m) => {
 await page.goto(BASE + "/", { waitUntil: "networkidle" });
 await page.waitForTimeout(2200);
 ok("landing loads", (await page.title()).includes("Amin Kadawala"));
-const cards = await page.locator("#projects article").count();
-ok("coding project cards", cards >= 9, `found ${cards}`);
+const cards = await page.locator("[data-project]").count();
+ok("12 coding projects", cards === 12, `found ${cards}`);
+ok("marquee band present", (await page.locator(".marquee-track").count()) === 1);
+ok(
+  "new projects present",
+  (await page.locator("text=Klovio").count()) >= 1 &&
+    (await page.locator("text=Who Funds Québec?").count()) >= 1 &&
+    (await page.locator("text=MTLParking").count()) >= 1
+);
 ok(
   "museum CTA present",
   (await page.locator("text=ENTER THE MUSEUM").count()) >= 1
 );
 await page.screenshot({ path: `${OUT}/q0-landing.png` });
 
-// --- Timeline ---
+// --- Museum: straight into the 3D wing ---
 await page.goto(BASE + "/museum", { waitUntil: "networkidle" });
-await page.waitForTimeout(3200);
-ok("timeline loads", (await page.title()).includes("Kadawala"));
-const medallions = await page.locator(".fp-node").count();
-ok("24 medallions on plan", medallions === 24, `found ${medallions}`);
-ok("directory present", await page.locator("text=DIRECTORY").isVisible());
-ok(
-  "gallery entrances visible",
-  (await page.locator("text=ENTER 3D GALLERY").count()) >= 6,
-  "directory links + wing doors"
-);
-await page.screenshot({ path: `${OUT}/q1-timeline.png` });
+await page.waitForTimeout(13000); // entry card + shader compile
+ok("museum canvas renders", (await page.locator("canvas").count()) === 1);
+const sectionButtons = await page
+  .locator("nav[aria-label=Sections] button")
+  .count();
+ok("5 section jumps in index", sectionButtons === 5, `found ${sectionButtons}`);
+await page.screenshot({ path: `${OUT}/q1-museum.png` });
 
-// Filter: focus Cover Art wing, others dim
-await page.locator("nav >> text=Cover Art").click();
-await page.waitForTimeout(1600);
-const dimmed = await page.locator(".fp-wing.dimmed").count();
-ok("filter dims other wings", dimmed === 4, `dimmed ${dimmed}`);
-await page.screenshot({ path: `${OUT}/q2-filter.png` });
-await page.locator("nav >> text=All Wings").click();
-await page.waitForTimeout(1200);
+// Jump to a later section, then inspect a piece
+await page.locator("nav[aria-label=Sections] button").nth(2).click();
+await page.waitForTimeout(2500);
+await page.screenshot({ path: `${OUT}/q2-section-jump.png` });
 
-// Plaque card — real mouse click on a medallion (guards the pointer-capture regression)
-await page.locator(".fp-node button").first().click();
-await page.waitForTimeout(1400);
-ok("plaque card opens", await page.locator("text=DRAFT RECORD").first().isVisible());
-const enterLink = page.locator("a", { hasText: "ENTER WING" });
-ok("enter-wing link present", (await enterLink.count()) === 1);
-await page.screenshot({ path: `${OUT}/q3-plaque.png` });
-await page.keyboard.press("Escape");
-
-// --- All five galleries ---
-const wings = [
-  "logos-branding",
-  "cover-art",
-  "headers-banners",
-  "print-stationery",
-  "concept-illustration",
-];
-for (const wing of wings) {
-  await page.goto(`${BASE}/gallery/${wing}`, { waitUntil: "networkidle" });
-  await page.waitForTimeout(6500);
-  const hasCanvas = (await page.locator("canvas").count()) === 1;
-  ok(`gallery ${wing} renders canvas`, hasCanvas);
-}
-await page.screenshot({ path: `${OUT}/q4-gallery-last.png` });
-
-// Inspect overlay: click a hung piece (unlocked pointer uses normal raycast)
-await page.goto(`${BASE}/gallery/cover-art`, { waitUntil: "networkidle" });
-await page.waitForTimeout(6500);
-await page.mouse.click(1350, 470); // right-wall piece
-await page.waitForTimeout(1500);
-let inspectOpen = await page.locator("text=RETURN TO THE WING").isVisible();
-if (!inspectOpen) {
-  await page.mouse.click(80, 470); // left-wall piece fallback
-  await page.waitForTimeout(1500);
+// Inspect: click a hung piece (left wall first, then right as fallback)
+let inspectOpen = false;
+for (const [x, y] of [
+  [260, 470],
+  [1340, 470],
+  [420, 460],
+]) {
+  await page.mouse.click(x, y);
+  await page.waitForTimeout(1400);
   inspectOpen = await page.locator("text=RETURN TO THE WING").isVisible();
+  if (inspectOpen) break;
+  if (await page.evaluate(() => !!document.pointerLockElement)) {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(600);
+  }
 }
 ok("inspect overlay opens on click", inspectOpen);
-if (inspectOpen) await page.screenshot({ path: `${OUT}/q5-inspect.png` });
+if (inspectOpen) {
+  await page.screenshot({ path: `${OUT}/q3-inspect.png` });
+  await page.keyboard.press("Escape");
+}
 
-// 404 for unknown wing
-const resp = await page.goto(`${BASE}/gallery/not-a-wing`, {
+// --- Old wing routes redirect into the museum ---
+const resp = await page.goto(`${BASE}/gallery/cover-art`, {
   waitUntil: "domcontentloaded",
 });
-ok("unknown wing 404s", resp.status() === 404, `status ${resp.status()}`);
+ok(
+  "old wing URL redirects to /museum",
+  resp.status() === 200 && page.url().includes("/museum"),
+  page.url()
+);
 
-// Mobile viewport smoke
+// --- Mobile smoke ---
 await page.setViewportSize({ width: 390, height: 844 });
 await page.goto(BASE + "/museum", { waitUntil: "networkidle" });
-await page.waitForTimeout(3000);
-const chipCount = await page.locator(".bottom-16 button:visible").count();
-ok("mobile wing chips visible", chipCount === 5, `visible chips ${chipCount}`);
-await page.screenshot({ path: `${OUT}/q6-mobile.png` });
+await page.waitForTimeout(10000);
+const chips = await page.locator(".bottom-16 button:visible").count();
+ok("mobile section chips visible", chips === 5, `visible chips ${chips}`);
+await page.screenshot({ path: `${OUT}/q4-mobile.png` });
 
-const benign = /favicon|third-party cookie|Slow network|not-a-wing/i;
+const benign = /favicon|third-party cookie|Slow network/i;
 const realErrors = errors.filter((e) => !benign.test(e));
 ok("no console/page errors", realErrors.length === 0, realErrors.join(" | "));
 

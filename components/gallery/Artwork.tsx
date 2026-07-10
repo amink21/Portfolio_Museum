@@ -63,7 +63,15 @@ function PlacardMesh({ piece }: { piece: Piece }) {
   );
 }
 
-export default function Artwork({ hang }: { hang: Hang }) {
+export default function Artwork({
+  hang,
+  castShadow = true,
+}: {
+  hang: Hang;
+  /** WebGL allows ~16 texture units per shader; every shadow map costs one,
+      so in the long single-wing hall only a subset of spots may cast. */
+  castShadow?: boolean;
+}) {
   const { piece, position, rotationY } = hang;
   const texture = useTexture(piece.image);
   const [hovered, setHovered] = useState(false);
@@ -176,7 +184,7 @@ export default function Artwork({ hang }: { hang: Hang }) {
         penumbra={0.6}
         distance={15}
         color="#fff8ea"
-        castShadow
+        castShadow={castShadow}
       />
     </group>
   );

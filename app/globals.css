@@ -82,6 +82,55 @@ body {
   border-color: var(--hairline);
 }
 
+/* Outlined display type for the marquee */
+.stroke-text {
+  -webkit-text-stroke: 1.5px rgba(244, 244, 245, 0.3);
+  color: transparent;
+}
+
+/* Infinite scrolling band */
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.marquee-track {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3.5rem;
+  width: max-content;
+  padding-right: 3.5rem;
+  animation: marquee 24s linear infinite;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Mouse-tilt project card */
+.tilt-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(244, 244, 245, 0.08) 46%,
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.tilt-card:hover::after {
+  opacity: 1;
+}
+
 /* ============ Floor plan (timeline) ============ */
 .fp-viewport {
   position: fixed;

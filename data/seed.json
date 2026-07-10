@@ -8,6 +8,54 @@
   },
   "codeProjects": [
     {
+      "slug": "klovio",
+      "title": "Klovio",
+      "description": "Life, bills & spend in one place — an iOS app for reminders, subscriptions, and spending tracking without spreadsheets or stress.",
+      "tech": [
+        "iOS",
+        "App Store",
+        "Personal Finance"
+      ],
+      "github": "",
+      "live": "https://getklovio.vercel.app/",
+      "appstore": "https://apps.apple.com/ca/app/klovio/id6759504415",
+      "image": "/projects/klovio.jpg",
+      "featured": true,
+      "ordinal": 1
+    },
+    {
+      "slug": "whofundsquebec",
+      "title": "Who Funds Québec?",
+      "description": "Interactive explorer of the Élections Québec public donor registry — 289,374 donations, $30.3M, and 108,216 donors across 7 years of data.",
+      "tech": [
+        "Data Visualization",
+        "Open Data",
+        "Bilingual"
+      ],
+      "github": "",
+      "live": "https://whofundsquebec.vercel.app/",
+      "appstore": "",
+      "image": "/projects/whofundsquebec.jpg",
+      "featured": true,
+      "ordinal": 2
+    },
+    {
+      "slug": "mtlparking",
+      "title": "MTLParking",
+      "description": "Browse, filter, and map Montréal parking tickets — statistics on totals, locations, and fines across the city.",
+      "tech": [
+        "Maps",
+        "Open Data",
+        "Analytics"
+      ],
+      "github": "",
+      "live": "https://mtlparking.vercel.app/",
+      "appstore": "",
+      "image": "/projects/mtlparking.jpg",
+      "featured": true,
+      "ordinal": 3
+    },
+    {
       "slug": "mtlhalalfood",
       "title": "MTLHalalFood",
       "description": "Progressive web app helping users discover halal restaurants in Montreal with filtering and offline capability.",
@@ -22,7 +70,8 @@
       "live": "https://mtlhalalfood.com/",
       "image": "/projects/project5.jpeg",
       "featured": true,
-      "ordinal": 1
+      "ordinal": 4,
+      "appstore": ""
     },
     {
       "slug": "ezsales",
@@ -37,8 +86,9 @@
       "github": "",
       "live": "",
       "image": "/projects/project6.jpg",
-      "featured": true,
-      "ordinal": 2
+      "featured": false,
+      "ordinal": 5,
+      "appstore": ""
     },
     {
       "slug": "folion",
@@ -52,8 +102,9 @@
       "github": "",
       "live": "",
       "image": "/projects/project5.jpeg",
-      "featured": true,
-      "ordinal": 3
+      "featured": false,
+      "ordinal": 6,
+      "appstore": ""
     },
     {
       "slug": "minecraft-cpp",
@@ -68,7 +119,8 @@
       "live": "",
       "image": "/projects/project1.jpg",
       "featured": false,
-      "ordinal": 4
+      "ordinal": 7,
+      "appstore": ""
     },
     {
       "slug": "personal-portfolio",
@@ -84,7 +136,8 @@
       "live": "https://portfolio-amink21.vercel.app/",
       "image": "/projects/project2.jpg",
       "featured": false,
-      "ordinal": 5
+      "ordinal": 8,
+      "appstore": ""
     },
     {
       "slug": "proteinpros",
@@ -100,7 +153,8 @@
       "live": "",
       "image": "/projects/project6.jpg",
       "featured": false,
-      "ordinal": 6
+      "ordinal": 9,
+      "appstore": ""
     },
     {
       "slug": "tictactoe-java",
@@ -114,7 +168,8 @@
       "live": "",
       "image": "/projects/project3.jpg",
       "featured": false,
-      "ordinal": 7
+      "ordinal": 10,
+      "appstore": ""
     },
     {
       "slug": "recipe-generator",
@@ -129,7 +184,8 @@
       "live": "https://recipe-generator-lake.vercel.app/",
       "image": "/projects/project4.jpg",
       "featured": false,
-      "ordinal": 8
+      "ordinal": 11,
+      "appstore": ""
     },
     {
       "slug": "calorie-counter",
@@ -144,7 +200,8 @@
       "live": "",
       "image": "/projects/project7.jpg",
       "featured": false,
-      "ordinal": 9
+      "ordinal": 12,
+      "appstore": ""
     }
   ],
   "categories": [

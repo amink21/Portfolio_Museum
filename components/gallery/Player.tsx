@@ -15,6 +15,7 @@ interface Props {
   onLockChange: (locked: boolean) => void;
   onInspect: (piece: Piece) => void;
   frozen: boolean;
+  jumpRef?: React.MutableRefObject<{ x: number; z: number } | null>;
 }
 
 const WALK_SPEED = 3.2;
@@ -26,6 +27,7 @@ export default function Player({
   onLockChange,
   onInspect,
   frozen,
+  jumpRef,
 }: Props) {
   const { camera, gl, scene } = useThree();
   const keys = useRef<Record<string, boolean>>({});
@@ -93,6 +95,23 @@ export default function Player({
 
   useFrame((_state, dt) => {
     if (frozenRef.current) return;
+
+    // Section jump: glide the visitor to the requested spot, overriding input
+    if (jumpRef?.current) {
+      const t = jumpRef.current;
+      const lerp = 1 - Math.exp(-4.5 * dt);
+      camera.position.x += (t.x - camera.position.x) * lerp;
+      camera.position.z += (t.z - camera.position.z) * lerp;
+      camera.position.y = EYE_HEIGHT;
+      vel.current.set(0, 0, 0);
+      if (
+        Math.hypot(t.x - camera.position.x, t.z - camera.position.z) < 0.2
+      ) {
+        jumpRef.current = null;
+      }
+      return;
+    }
+
     const k = keys.current;
     const fwd =
       (k.KeyW || k.ArrowUp ? 1 : 0) - (k.KeyS || k.ArrowDown ? 1 : 0);
