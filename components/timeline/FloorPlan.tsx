@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import type { Category, MuseumData, Piece } from "@/lib/types";
 import {
@@ -106,8 +107,9 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
       t.s = ns;
     };
 
+    // NB: no setPointerCapture here — capturing retargets the eventual `click`
+    // to the viewport, which would swallow clicks on medallions and links.
     const onPointerDown = (e: PointerEvent) => {
-      vp.setPointerCapture(e.pointerId);
       pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
       draggedRef.current = false;
       if (pointers.current.size === 2) {
@@ -175,9 +177,9 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
 
     vp.addEventListener("wheel", onWheel, { passive: false });
     vp.addEventListener("pointerdown", onPointerDown);
-    vp.addEventListener("pointermove", onPointerMove);
-    vp.addEventListener("pointerup", onPointerUp);
-    vp.addEventListener("pointercancel", onPointerUp);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", onPointerUp);
     vp.addEventListener("dblclick", onDblClick);
     window.addEventListener("resize", onResize);
 
@@ -205,9 +207,9 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
       ctx.revert();
       vp.removeEventListener("wheel", onWheel);
       vp.removeEventListener("pointerdown", onPointerDown);
-      vp.removeEventListener("pointermove", onPointerMove);
-      vp.removeEventListener("pointerup", onPointerUp);
-      vp.removeEventListener("pointercancel", onPointerUp);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
       vp.removeEventListener("dblclick", onDblClick);
       window.removeEventListener("resize", onResize);
     };
@@ -373,6 +375,16 @@ export default function FloorPlan({ data }: { data: MuseumData }) {
                   className="fp-corner"
                   style={{ right: -3, bottom: -3, borderRightWidth: 2, borderBottomWidth: 2 }}
                 />
+                <Link
+                  href={`/gallery/${c.slug}`}
+                  className="fp-enter"
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onClick={(e) => {
+                    if (draggedRef.current) e.preventDefault();
+                  }}
+                >
+                  ENTER 3D GALLERY →
+                </Link>
                 <div className="pointer-events-none absolute -top-4 left-1 flex -translate-y-full items-baseline gap-4">
                   <p
                     className="font-mono text-[11px] tracking-[0.34em]"

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { Category } from "@/lib/types";
 
 interface Props {
@@ -58,6 +59,12 @@ export default function Directory({ categories, counts, active, onSelect }: Prop
                 {c.wing.toUpperCase()} · {counts[c.slug] ?? 0} WORKS
               </span>
             </button>
+            <Link
+              href={`/gallery/${c.slug}`}
+              className="mt-1 block pl-4 font-mono text-[10px] tracking-[0.2em] text-brass transition-colors hover:text-parchment"
+            >
+              ENTER 3D GALLERY →
+            </Link>
           </li>
         ))}
       </ul>

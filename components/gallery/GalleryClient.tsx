@@ -80,7 +80,7 @@ export default function GalleryClient({ category, pieces, museum }: Props) {
 
       {/* Chrome */}
       <header className="pointer-events-none fixed left-0 right-0 top-0 z-10 flex items-start justify-between p-6">
-        <div>
+        <div className="bg-[rgba(11,12,14,0.72)] px-4 py-3 backdrop-blur-sm">
           <Link
             href="/"
             className="pointer-events-auto font-mono text-[10px] tracking-[0.26em] text-parchment-dim transition-colors hover:text-brass"
@@ -94,7 +94,7 @@ export default function GalleryClient({ category, pieces, museum }: Props) {
             {category.wing.toUpperCase()}
           </p>
         </div>
-        <p className="hidden font-mono text-[10px] tracking-[0.2em] text-parchment-dim md:block">
+        <p className="hidden bg-[rgba(11,12,14,0.72)] px-3 py-2 font-mono text-[10px] tracking-[0.2em] text-parchment-dim backdrop-blur-sm md:block">
           {pieces.length} WORKS ON VIEW
         </p>
       </header>
@@ -106,10 +106,10 @@ export default function GalleryClient({ category, pieces, museum }: Props) {
 
       {/* Control hints */}
       {entered && !inspecting && (
-        <p className="pointer-events-none fixed bottom-6 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap font-mono text-[10px] tracking-[0.22em] text-parchment-dim">
+        <p className="pointer-events-none fixed bottom-6 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap bg-[rgba(11,12,14,0.72)] px-4 py-2 font-mono text-[10px] tracking-[0.22em] text-parchment-dim backdrop-blur-sm">
           {locked
             ? "W A S D — WALK · LOOK WITH MOUSE · CLICK A WORK TO INSPECT · ESC — RELEASE"
-            : "CLICK TO ENTER FIRST-PERSON · W A S D + MOUSE"}
+            : "CLICK A WORK TO INSPECT · CLICK THE FLOOR TO WALK (W A S D + MOUSE)"}
         </p>
       )}
 

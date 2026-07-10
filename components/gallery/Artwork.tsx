@@ -25,18 +25,18 @@ function PlacardMesh({ piece }: { piece: Piece }) {
     const draw = () => {
       if (cancelled) return;
       const ctx = canvas.getContext("2d")!;
-      ctx.fillStyle = "#141209";
+      ctx.fillStyle = "#f5f2ea";
       ctx.fillRect(0, 0, 640, 256);
-      ctx.strokeStyle = "rgba(201,162,39,0.8)";
-      ctx.lineWidth = 4;
-      ctx.strokeRect(10, 10, 620, 236);
-      ctx.fillStyle = "#c9a227";
+      ctx.strokeStyle = "rgba(120,110,90,0.5)";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(8, 8, 624, 240);
+      ctx.fillStyle = "#8a7120";
       ctx.font = "500 30px 'IBM Plex Mono', monospace";
       ctx.fillText(`CAT. ${piece.catalogNo}`, 40, 74);
-      ctx.fillStyle = "#ede8de";
+      ctx.fillStyle = "#211e18";
       ctx.font = "600 44px Fraunces, Georgia, serif";
       ctx.fillText(piece.title, 40, 140, 560);
-      ctx.fillStyle = "rgba(237,232,222,0.6)";
+      ctx.fillStyle = "rgba(33,30,24,0.65)";
       ctx.font = "400 32px 'IBM Plex Mono', monospace";
       ctx.fillText(`${piece.yearIsPlaceholder ? "c. " : ""}${piece.year}`, 40, 200);
       if (texRef.current) texRef.current.needsUpdate = true;
@@ -131,7 +131,7 @@ export default function Artwork({ hang }: { hang: Hang }) {
       {/* Mat board */}
       <mesh position={[0, 0, -0.005]}>
         <boxGeometry args={[matW, matH, 0.045]} />
-        <meshStandardMaterial color="#191a1e" roughness={0.85} />
+        <meshStandardMaterial color="#f0ede4" roughness={0.9} />
       </mesh>
 
       {/* The work itself, under a subtle clearcoat "glass" */}
@@ -152,11 +152,11 @@ export default function Artwork({ hang }: { hang: Hang }) {
         />
       </mesh>
 
-      {/* Brass placard beside the work */}
+      {/* Placard beside the work */}
       <group position={[matW / 2 + 0.42, -0.25, 0]}>
         <mesh>
           <boxGeometry args={[0.52, 0.22, 0.02]} />
-          <meshStandardMaterial color="#332b12" roughness={0.4} metalness={0.8} />
+          <meshStandardMaterial color="#d8d4c9" roughness={0.7} metalness={0.1} />
         </mesh>
         <PlacardMesh piece={piece} />
       </group>
@@ -171,10 +171,11 @@ export default function Artwork({ hang }: { hang: Hang }) {
       <AimedSpot
         position={localLight}
         aim={[0, 0, 0.03]}
-        intensity={42}
-        angle={0.5}
-        penumbra={0.65}
+        intensity={30}
+        angle={0.52}
+        penumbra={0.6}
         distance={15}
+        color="#fff8ea"
         castShadow
       />
     </group>

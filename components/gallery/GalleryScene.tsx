@@ -59,15 +59,14 @@ export default function GalleryScene({
       camera={{ fov: 62, position: layout.start, near: 0.1, far: 140 }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.28;
+        gl.toneMappingExposure = 1.15;
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
       }}
     >
       <color attach="background" args={["#0b0c0e"]} />
-      <fog attach="fog" args={["#0b0c0e", 10, 60]} />
 
-      <ambientLight intensity={0.14} color="#f2e6cf" />
-      <hemisphereLight intensity={0.16} color="#e9ddc4" groundColor="#101013" />
+      <ambientLight intensity={0.3} color="#fff4e2" />
+      <hemisphereLight intensity={0.55} color="#fff3dd" groundColor="#3d382f" />
 
       <Suspense fallback={null}>
         <Room category={category} roomLength={layout.roomLength} />

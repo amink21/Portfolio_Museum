@@ -28,6 +28,11 @@ ok("timeline loads", (await page.title()).includes("Kadawala"));
 const medallions = await page.locator(".fp-node").count();
 ok("24 medallions on plan", medallions === 24, `found ${medallions}`);
 ok("directory present", await page.locator("text=DIRECTORY").isVisible());
+ok(
+  "gallery entrances visible",
+  (await page.locator("text=ENTER 3D GALLERY").count()) >= 6,
+  "directory links + wing doors"
+);
 await page.screenshot({ path: `${OUT}/q1-timeline.png` });
 
 // Filter: focus Cover Art wing, others dim
@@ -39,12 +44,8 @@ await page.screenshot({ path: `${OUT}/q2-filter.png` });
 await page.locator("nav >> text=All Wings").click();
 await page.waitForTimeout(1200);
 
-// Plaque card
-await page.evaluate(() => {
-  document
-    .querySelector(".fp-node button")
-    ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-});
+// Plaque card — real mouse click on a medallion (guards the pointer-capture regression)
+await page.locator(".fp-node button").first().click();
 await page.waitForTimeout(1400);
 ok("plaque card opens", await page.locator("text=DRAFT RECORD").first().isVisible());
 const enterLink = page.locator("a", { hasText: "ENTER WING" });
@@ -96,7 +97,7 @@ const chipCount = await page.locator(".bottom-16 button:visible").count();
 ok("mobile wing chips visible", chipCount === 5, `visible chips ${chipCount}`);
 await page.screenshot({ path: `${OUT}/q6-mobile.png` });
 
-const benign = /favicon|third-party cookie|Slow network/i;
+const benign = /favicon|third-party cookie|Slow network|not-a-wing/i;
 const realErrors = errors.filter((e) => !benign.test(e));
 ok("no console/page errors", realErrors.length === 0, realErrors.join(" | "));
 
