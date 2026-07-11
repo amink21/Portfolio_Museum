@@ -82,13 +82,19 @@ export default function GalleryScene({
       }}
     >
       <color attach="background" args={["#0a0a0b"]} />
+      {/* faint aerial perspective so the far end doesn't read razor-sharp */}
+      <fog attach="fog" args={["#8a8478", 30, 160]} />
 
       <ambientLight intensity={0.3} color="#fff4e2" />
       <hemisphereLight intensity={0.55} color="#fff3dd" groundColor="#3d382f" />
 
       <Suspense fallback={null}>
         <ReadySignal onReady={onReady} />
-        <Room title="The Collection" roomLength={layout.roomLength} />
+        <Room
+          title="The Collection"
+          roomLength={layout.roomLength}
+          pilasters={layout.pilasters}
+        />
         {layout.hangs.map((hang, i) => (
           <Artwork key={hang.piece.slug} hang={hang} castShadow={i % 3 === 0} />
         ))}

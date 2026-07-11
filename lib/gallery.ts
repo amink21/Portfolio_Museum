@@ -28,6 +28,8 @@ export interface MuseumLayout {
   roomLength: number;
   hangs: Hang[];
   sections: Section[];
+  /** wall pilasters, placed in the gaps between frames so they never overlap art */
+  pilasters: Array<{ side: number; z: number }>;
   /** where the visitor starts, facing -z */
   start: [number, number, number];
 }
@@ -87,10 +89,28 @@ export function computeMuseum(
     cursor -= sectionLen(group.pieces.length);
   });
 
+  // Pilasters sit exactly midway between same-wall frames (and one beyond each
+  // end), so they can never cut across a hung piece.
+  const pilasters: Array<{ side: number; z: number }> = [];
+  for (const side of [-1, 1]) {
+    const zs = hangs
+      .filter((h) => h.side === side)
+      .map((h) => h.position[2])
+      .sort((a, b) => b - a);
+    for (let i = 0; i < zs.length; i++) {
+      if (i === 0) pilasters.push({ side, z: zs[0] + SPACING / 2 });
+      pilasters.push({
+        side,
+        z: i < zs.length - 1 ? (zs[i] + zs[i + 1]) / 2 : zs[i] - SPACING / 2,
+      });
+    }
+  }
+
   return {
     roomLength,
     hangs,
     sections,
+    pilasters,
     start: [0, EYE_HEIGHT, roomLength / 2 - 1.6],
   };
 }

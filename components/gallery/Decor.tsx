@@ -12,28 +12,65 @@ interface VisitorProps {
   height?: number;
   shade?: string;
   phase?: number;
+  rotationY?: number;
+  seated?: boolean;
 }
 
-/** Stylized archviz silhouette: matte capsule body + head, idling gently. */
+/** Stylized archviz silhouette: torso, legs, head — idling gently. */
 export function Visitor({
   position,
   height = 1.72,
   shade = "#26262b",
   phase = 0,
+  rotationY = 0,
+  seated = false,
 }: VisitorProps) {
   const g = useRef<THREE.Group>(null);
   useFrame(({ clock }) => {
     const t = clock.elapsedTime + phase;
     if (g.current) {
       g.current.rotation.z = Math.sin(t * 0.6) * 0.012;
-      g.current.rotation.y = Math.sin(t * 0.21) * 0.22;
+      g.current.rotation.y = rotationY + Math.sin(t * 0.21) * 0.2;
     }
   });
-  const bodyH = height - 0.28;
+
+  if (seated) {
+    // perched on a bench: upright torso above the seat, legs angled forward
+    return (
+      <group ref={g} position={position} rotation-y={rotationY}>
+        <mesh position={[0, 0.86, 0]} castShadow>
+          <capsuleGeometry args={[0.16, 0.42, 6, 12]} />
+          <meshStandardMaterial color={shade} roughness={0.92} />
+        </mesh>
+        <mesh position={[0, 0.42, 0.24]} rotation-x={-1.05} castShadow>
+          <boxGeometry args={[0.26, 0.5, 0.14]} />
+          <meshStandardMaterial color={shade} roughness={0.92} />
+        </mesh>
+        <mesh position={[0, 0.22, 0.42]} castShadow>
+          <boxGeometry args={[0.24, 0.42, 0.12]} />
+          <meshStandardMaterial color="#1c1c20" roughness={0.92} />
+        </mesh>
+        <mesh position={[0, 1.28, 0]} castShadow>
+          <sphereGeometry args={[0.1, 16, 16]} />
+          <meshStandardMaterial color="#3b3b40" roughness={0.85} />
+        </mesh>
+      </group>
+    );
+  }
+
+  const legH = 0.55;
+  const torsoTop = height - 0.22;
+  const torsoLen = torsoTop - legH - 0.32;
   return (
-    <group ref={g} position={position}>
-      <mesh position={[0, bodyH / 2 + 0.02, 0]} castShadow>
-        <capsuleGeometry args={[0.155, bodyH - 0.31, 6, 12]} />
+    <group ref={g} position={position} rotation-y={rotationY}>
+      {[-0.07, 0.07].map((x) => (
+        <mesh key={x} position={[x, legH / 2, 0]} castShadow>
+          <cylinderGeometry args={[0.052, 0.06, legH, 10]} />
+          <meshStandardMaterial color="#1c1c20" roughness={0.92} />
+        </mesh>
+      ))}
+      <mesh position={[0, legH + torsoLen / 2 + 0.14, 0]} castShadow>
+        <capsuleGeometry args={[0.155, torsoLen, 6, 12]} />
         <meshStandardMaterial color={shade} roughness={0.92} />
       </mesh>
       <mesh position={[0, height - 0.1, 0]} castShadow>
@@ -199,7 +236,22 @@ export function crowdFor(
   // a pair chatting mid-hall
   visitors.push(
     { position: [0.55, 0, roomLength * 0.06], height: 1.74, shade: "#2a2622", phase: 9.1 },
-    { position: [-0.35, 0, roomLength * 0.06 + 0.5], height: 1.62, shade: "#22262e", phase: 4.3 }
+    { position: [-0.35, 0, roomLength * 0.06 + 0.5], height: 1.62, shade: "#22262e", phase: 4.3, rotationY: 2.6 }
   );
+  // one resting on the first bench
+  visitors.push({
+    position: [0.3, 0, roomLength / 2 - 9],
+    shade: "#2e2a33",
+    phase: 6.4,
+    seated: true,
+  });
+  // security by the entry doors
+  visitors.push({
+    position: [1.7, 0, roomLength / 2 - 1.9],
+    height: 1.78,
+    shade: "#1d2634",
+    phase: 12.2,
+    rotationY: 2.9,
+  });
   return visitors;
 }

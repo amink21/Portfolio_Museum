@@ -12,6 +12,46 @@ const FRAME_T = 0.075; // frame bar thickness
 const FRAME_D = 0.07; // frame depth off the wall
 const MAT = 0.14; // mat border around the artwork
 
+/** Barely-there volumetric cone between a spotlight and its artwork. */
+function LightCone({
+  from,
+  to,
+}: {
+  from: [number, number, number];
+  to: [number, number, number];
+}) {
+  const { position, quaternion, length } = useMemo(() => {
+    const a = new THREE.Vector3(...from);
+    const b = new THREE.Vector3(...to);
+    const dir = b.clone().sub(a);
+    const len = dir.length();
+    const q = new THREE.Quaternion().setFromUnitVectors(
+      new THREE.Vector3(0, -1, 0), // cone apex (+y) at the light, base (-y) at the art
+      dir.clone().normalize()
+    );
+    return {
+      position: a.clone().add(b).multiplyScalar(0.5),
+      quaternion: q,
+      length: len,
+    };
+  }, [from, to]);
+
+  return (
+    <mesh position={position} quaternion={quaternion}>
+      <coneGeometry args={[0.85, length, 20, 1, true]} />
+      <meshBasicMaterial
+        color="#fff6df"
+        transparent
+        opacity={0.05}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+        side={THREE.DoubleSide}
+        toneMapped={false}
+      />
+    </mesh>
+  );
+}
+
 function PlacardMesh({ piece }: { piece: Piece }) {
   const texRef = useRef<THREE.CanvasTexture>(null);
   const canvas = useMemo(() => {
@@ -191,13 +231,30 @@ function ArtworkBody({
         <PlacardMesh piece={piece} />
       </group>
 
-      {/* Spot housing on the rail */}
+      {/* Hanging wires from the picture rail to the frame */}
+      {[-matW / 3, matW / 3].map((x) => {
+        const topY = matH / 2 + FRAME_T;
+        const railY = ROOM_H - 0.14 - position[1];
+        return (
+          <mesh key={`wire-${x}`} position={[x, (topY + railY) / 2, -0.01]}>
+            <cylinderGeometry args={[0.0045, 0.0045, railY - topY, 6]} />
+            <meshStandardMaterial color="#1f1f22" roughness={0.5} metalness={0.6} />
+          </mesh>
+        );
+      })}
+
+      {/* Spot housing on the rail, glowing lens, and a faint dust-lit cone */}
       <group position={localLight}>
         <mesh position={[0, 0.02, 0]} rotation-x={0.5}>
           <cylinderGeometry args={[0.055, 0.075, 0.22, 16]} />
           <meshStandardMaterial color="#131418" roughness={0.35} metalness={0.75} />
         </mesh>
+        <mesh position={[0, -0.055, 0.075]} rotation-x={0.5}>
+          <sphereGeometry args={[0.032, 10, 10]} />
+          <meshBasicMaterial color="#fff3cf" toneMapped={false} />
+        </mesh>
       </group>
+      <LightCone from={localLight} to={[0, 0, 0.03]} />
       <AimedSpot
         position={localLight}
         aim={[0, 0, 0.03]}
